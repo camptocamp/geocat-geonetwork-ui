@@ -34,15 +34,15 @@ proxy_path = ""
 #  - for font families: https://developer.mozilla.org/en-US/docs/Web/CSS/font-family
 #  - for background: https://developer.mozilla.org/en-US/docs/Web/CSS/background
 [theme]
-primary_color = "#c82850"
-secondary_color = "#001638"
+primary_color = "#f19330"
+secondary_color = "#0071ae"
 main_color = "#212029" # All-purpose text color
 background_color = "#fdfbff"
 
 # These optional parameters indicate which background should be used for the main header and the text color used
 # on top of the background. The color should be chosen to contrast well with the background (defaults to white).
 # Note: The search header does not use the header_foreground_color as it allows futher customisation via HTML.
-# header_background = "center /cover url('assets/img/header_bg.webp')" or "var(--color-gray-500)"
+header_background = "var(--color-secondary)"
 # header_foreground_color = 'white'
 
 # This optional parameter allows to override the fallback image that should be used for thumbnails,
@@ -135,3 +135,15 @@ background_color = "#fdfbff"
 #     Welcome to <span class="text-primary">Organization</span>'s<br>
 #     wonderful <span style="font-size: 1.2em;">data catalogue</span>
 #     """
+[translations.fr]
+datahub.header.title.html = '<div class="text-white uppercase">geocat.ch</div><div class="text-white text-3xl">Le catalogue géographique de la Suisse</div>'
+search.field.location.placeholder = 'ex: Lausanne'
+[translations.en]
+datahub.header.title.html = '<div class="text-white uppercase">geocat.ch</div><div class="text-white text-3xl">The geographic data catalogue of Switzerland</div>'
+search.field.location.placeholder = 'ex: Lausanne'
+[translations.de]
+datahub.header.title.html = '<div class="text-white uppercase">geocat.ch</div><div class="text-white text-3xl">Der geografische Datenkatalog der Schweiz</div>'
+search.field.location.placeholder = 'ex: Lausanne'
+[translations.it]
+datahub.header.title.html = '<div class="text-white uppercase">geocat.ch</div><div class="text-white text-3xl">Catalogo svizzero dei dati geografici</div>'
+search.field.location.placeholder = 'ex: Lausanne'
