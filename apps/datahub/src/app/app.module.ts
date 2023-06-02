@@ -36,6 +36,7 @@ import {
   ThemeService,
   UtilSharedModule,
   getGeometryFromGeoJSON,
+  ORGANIZATIONS_STRATEGY,
 } from '@geonetwork-ui/util/shared'
 import { LOGIN_URL } from '@geonetwork-ui/feature/auth'
 import { EffectsModule } from '@ngrx/effects'
@@ -165,6 +166,10 @@ export const metaReducers: MetaReducer[] = !environment.production ? [] : []
         }
         return null
       },
+    },
+    {
+      provide: ORGANIZATIONS_STRATEGY,
+      useValue: 'groups',
     },
   ],
   bootstrap: [AppComponent],
