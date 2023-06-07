@@ -16,6 +16,7 @@ import {
   SetFavoritesOnly,
   SetFilters,
   SetIncludeOnAggregation,
+  SetLocationFilter,
   SetResultsAggregations,
   SetResultsHits,
   SetSearch,
@@ -190,6 +191,18 @@ describe('Effects', () => {
     it('clear results list on setSpatialFilterEnabled action', () => {
       actions$ = hot('-a---', {
         a: new SetSpatialFilterEnabled(true, 'main'),
+      })
+      const expected = hot('-(bcd)', {
+        b: new ClearResults('main'),
+        c: new ClearPagination('main'),
+        d: new RequestMoreResults('main'),
+      })
+
+      expect(effects.clearResults$).toBeObservable(expected)
+    })
+    it('clear results list on setLocationFilter action', () => {
+      actions$ = hot('-a---', {
+        a: new SetLocationFilter('myLoc', [1, 2, 3, 4], 'main'),
       })
       const expected = hot('-(bcd)', {
         b: new ClearResults('main'),
@@ -388,6 +401,42 @@ describe('Effects', () => {
             null
           )
         })
+      })
+    })
+
+    describe('when a location filter is present in the state', () => {
+      let esService: ElasticsearchService
+      beforeEach(() => {
+        esService = TestBed.inject(ElasticsearchService)
+        TestBed.inject(Store).dispatch(
+          new SetLocationFilter('myLoc', [1, 2, 3, 4], 'main')
+        )
+      })
+      it('passes the bbox as geometry to the ES service', async () => {
+        actions$ = of(new RequestMoreResults('main'))
+        await readFirst(effects.loadResults$)
+        expect(esService.getSearchRequestBody).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          undefined,
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          null,
+          {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [1, 2],
+                [1, 4],
+                [3, 4],
+                [3, 2],
+                [1, 2],
+              ],
+            ],
+          }
+        )
       })
     })
   })

@@ -18,6 +18,7 @@ import {
 } from 'rxjs/operators'
 import {
   AddResults,
+  CLEAR_LOCATION_FILTER,
   ClearError,
   ClearPagination,
   ClearResults,
@@ -31,6 +32,7 @@ import {
   SET_FAVORITES_ONLY,
   SET_FILTERS,
   SET_INCLUDE_ON_AGGREGATION,
+  SET_LOCATION_FILTER,
   SET_SEARCH,
   SET_SORT_BY,
   SET_SPATIAL_FILTER_ENABLED,
@@ -49,6 +51,21 @@ import { switchMapWithSearchId } from '../utils/operators/search.operator'
 import { FavoritesService } from '../favorites/favorites.service'
 import { Geometry } from 'geojson'
 import { FILTER_GEOMETRY } from '../feature-search.module'
+
+function getGeojsonFromBbox(bbox: [number, number, number, number]): Geometry {
+  return {
+    type: 'Polygon',
+    coordinates: [
+      [
+        [bbox[0], bbox[1]],
+        [bbox[0], bbox[3]],
+        [bbox[2], bbox[3]],
+        [bbox[2], bbox[1]],
+        [bbox[0], bbox[1]],
+      ],
+    ],
+  }
+}
 
 @Injectable()
 export class SearchEffects {
@@ -73,7 +90,9 @@ export class SearchEffects {
         UPDATE_FILTERS,
         SET_SEARCH,
         SET_FAVORITES_ONLY,
-        SET_SPATIAL_FILTER_ENABLED
+        SET_SPATIAL_FILTER_ENABLED,
+        SET_LOCATION_FILTER,
+        CLEAR_LOCATION_FILTER
       ),
       switchMap((action: SearchActions) =>
         of(
@@ -138,7 +157,9 @@ export class SearchEffects {
                     state.params.filters,
                     state.config.filters,
                     state.params.favoritesOnly ? favorites : null,
-                    geometry
+                    state.params.locationBbox
+                      ? getGeojsonFromBbox(state.params.locationBbox)
+                      : geometry
                   )
                 )
               )
