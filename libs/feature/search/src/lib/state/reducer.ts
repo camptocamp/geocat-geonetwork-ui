@@ -18,6 +18,10 @@ export interface SearchStateParams {
   from?: number
   favoritesOnly?: boolean
   useSpatialFilter?: boolean
+
+  // geocat specific
+  locationBbox?: [number, number, number, number] // Expressed as [minx, miny, maxx, maxy]
+  locationLabel?: string
 }
 
 export type SearchError = {
@@ -322,6 +326,27 @@ export function reducerSearch(
         params: {
           ...state.params,
           useSpatialFilter: action.enabled,
+        },
+      }
+    }
+
+    case fromActions.SET_LOCATION_FILTER: {
+      return {
+        ...state,
+        params: {
+          ...state.params,
+          locationBbox: action.bbox,
+          locationLabel: action.label,
+        },
+      }
+    }
+    case fromActions.CLEAR_LOCATION_FILTER: {
+      return {
+        ...state,
+        params: {
+          ...state.params,
+          locationBbox: undefined,
+          locationLabel: undefined,
         },
       }
     }
