@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { AutocompleteItem } from '@geonetwork-ui/ui/inputs'
 import { LocationSearchService } from './location-search.service'
-import { LocationSearchResultModel } from './location-search-result.model'
+import { LocationBbox } from './location-search-result.model'
+import { SearchFacade } from '../state/search.facade'
+import { combineLatest, of } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 @Component({
   selector: 'gn-ui-location-search',
@@ -10,21 +13,41 @@ import { LocationSearchResultModel } from './location-search-result.model'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LocationSearchComponent {
-  constructor(private locationSearchService: LocationSearchService) {}
+  currentLocation$ = combineLatest([
+    this.searchFacade.locationFilterLabel$,
+    this.searchFacade.locationFilterBbox$,
+  ]).pipe(map(([label, bbox]) => ({ label, bbox })))
 
-  displayWithFn: (LocationSearchResultModel) => string = (location) => {
-    return location?.attrs.label.replace(/<[^>]*>?/gm, '')
+  constructor(
+    private locationSearchService: LocationSearchService,
+    private searchFacade: SearchFacade
+  ) {}
+
+  displayWithFn = (location: LocationBbox): string => {
+    return location?.label
   }
 
   autoCompleteAction = (query: string) => {
-    return this.locationSearchService.getLocationSearch(query)
+    if (!query) return of([])
+    return this.locationSearchService.queryLocations(query)
   }
 
   handleItemSelection(item: AutocompleteItem) {
-    console.log('location', item)
+    const location = item as LocationBbox
+    this.searchFacade.setLocationFilter(location.label, location.bbox)
   }
 
   handleInputSubmission(inputValue: string) {
-    console.log('inputValue', inputValue)
+    if (inputValue === '') {
+      this.searchFacade.clearLocationFilter()
+      return
+    }
+    this.locationSearchService.queryLocations(inputValue).subscribe((item) => {
+      if (item.length === 0) {
+        console.warn(`No location found for the following query: ${inputValue}`)
+        return
+      }
+      this.searchFacade.setLocationFilter(item[0].label, item[0].bbox)
+    })
   }
 }
