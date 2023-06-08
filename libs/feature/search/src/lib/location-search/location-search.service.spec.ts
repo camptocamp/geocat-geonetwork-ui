@@ -72,7 +72,7 @@ describe('LocationSearchService', () => {
     let items
     beforeEach(() => {
       const customQuery = 'simple query'
-      service.getLocationSearch(customQuery).subscribe((r) => (items = r))
+      service.queryLocations(customQuery).subscribe((r) => (items = r))
       httpController
         .match((request) => {
           return (
@@ -100,7 +100,7 @@ describe('LocationSearchService', () => {
   describe('request fails', () => {
     it('should send a request to geo admin api with query', (done) => {
       const customQuery = 'simple query'
-      service.getLocationSearch(customQuery).subscribe((data) => {
+      service.queryLocations(customQuery).subscribe((data) => {
         expect(data).toStrictEqual([])
         done()
       })

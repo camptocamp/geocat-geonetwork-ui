@@ -22,7 +22,7 @@ export class LocationSearchService {
     }
   }
 
-  getLocationSearch(query: string): Observable<LocationBbox[]> {
+  queryLocations(query: string): Observable<LocationBbox[]> {
     const requestUrl = new URL(
       'https://api3.geo.admin.ch/rest/services/api/SearchServer'
     )
@@ -42,8 +42,4 @@ export class LocationSearchService {
       })
     )
   }
-
-  // attrs.id
-  // 2nd request to get the feature of the selected location?
-  // https://api3.geo.admin.ch/rest/services/api/SearchServer?type=featuresearch&
 }

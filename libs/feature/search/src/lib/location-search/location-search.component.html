@@ -4,5 +4,7 @@
   [action]="autoCompleteAction"
   (itemSelected)="handleItemSelection($event)"
   (inputSubmitted)="handleInputSubmission($event)"
-  [icon]="'pin_drop'"
+  icon="pin_drop"
+  [value]="currentLocation$ | async"
+  [minChar]="1"
 ></gn-ui-autocomplete>

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { AutocompleteItem } from '@geonetwork-ui/ui/inputs'
 import { TranslateModule } from '@ngx-translate/core'
-import { Observable } from 'rxjs'
+import { Observable, of } from 'rxjs'
 import { LocationSearchComponent } from './location-search.component'
 import { LocationSearchService } from './location-search.service'
 import { SearchFacade } from '../state/search.facade'
@@ -35,7 +35,7 @@ const LOCATIONS_FIXTURE: LocationBbox[] = [
 ]
 
 class LocationSearchServiceMock {
-  getLocationSearch = jest.fn()
+  queryLocations = jest.fn(() => of(LOCATIONS_FIXTURE))
 }
 class SearchFacadeMock {
   setLocationFilter = jest.fn()
@@ -81,7 +81,7 @@ describe('LocationSearchComponent', () => {
     })
 
     it('calls the location search service', () => {
-      expect(service.getLocationSearch).toHaveBeenCalledWith('test query')
+      expect(service.queryLocations).toHaveBeenCalledWith('test query')
     })
   })
 
@@ -91,6 +91,21 @@ describe('LocationSearchComponent', () => {
     })
 
     it('calls the search facade with label and bbox', () => {
+      expect(facade.setLocationFilter).toHaveBeenCalledWith(
+        'Zurigo (ZH)',
+        [8.446892, 47.319034, 8.627209, 47.43514]
+      )
+    })
+  })
+
+  describe('#handleInputSubmission', () => {
+    beforeEach(() => {
+      component.handleInputSubmission('zur')
+    })
+    it('calls the location search service with the query', () => {
+      expect(service.queryLocations).toHaveBeenCalledWith('zur')
+    })
+    it('calls the search facade with the first location found', () => {
       expect(facade.setLocationFilter).toHaveBeenCalledWith(
         'Zurigo (ZH)',
         [8.446892, 47.319034, 8.627209, 47.43514]
