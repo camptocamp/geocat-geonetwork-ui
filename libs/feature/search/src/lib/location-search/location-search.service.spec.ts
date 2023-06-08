@@ -11,8 +11,7 @@ const RESULT_FIXTURE = [
       detail: 'zurigo zh',
       featureId: '261',
       geom_quadindex: '030003',
-      geom_st_box2d:
-        'BOX(2676224.6939999983 1241584.1049999967,2689665.813000001 1254306.2330000028)',
+      geom_st_box2d: 'BOX(8.446892 47.319034,8.627209 47.43514)',
       label: '<b>Zurigo (ZH)</b>',
       lat: 47.37721252441406,
       lon: 8.527311325073242,
@@ -20,20 +19,19 @@ const RESULT_FIXTURE = [
       objectclass: '',
       origin: 'gg25',
       rank: 2,
-      x: 1247945.25,
-      y: 2682217,
+      x: 8.527311325073242,
+      y: 47.37721252441406,
       zoomlevel: 4294967295,
     },
     id: 153,
-    weight: 7,
+    weight: 6,
   },
   {
     attrs: {
       detail: 'zurich zh',
       featureId: '261',
       geom_quadindex: '030003',
-      geom_st_box2d:
-        'BOX(2676224.6939999983 1241584.1049999967,2689665.813000001 1254306.2330000028)',
+      geom_st_box2d: 'BOX(8.446892 47.319034,8.627209 47.43514)',
       label: '<b>Zurich (ZH)</b>',
       lat: 47.37721252441406,
       lon: 8.527311325073242,
@@ -41,14 +39,15 @@ const RESULT_FIXTURE = [
       objectclass: '',
       origin: 'gg25',
       rank: 2,
-      x: 1247945.25,
-      y: 2682217,
+      x: 8.527311325073242,
+      y: 47.37721252441406,
       zoomlevel: 4294967295,
     },
     id: 154,
-    weight: 7,
+    weight: 6,
   },
 ]
+
 describe('LocationSearchService', () => {
   let service: LocationSearchService
   let httpController: HttpTestingController
@@ -57,9 +56,7 @@ describe('LocationSearchService', () => {
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
     }).compileComponents()
-
     service = TestBed.inject(LocationSearchService)
-
     httpController = TestBed.inject(HttpTestingController)
   })
 
@@ -72,29 +69,37 @@ describe('LocationSearchService', () => {
   })
 
   describe('request successful', () => {
-    it('should send a request to geo admin api with query', (done) => {
+    let items
+    beforeEach(() => {
       const customQuery = 'simple query'
-      service.getLocationSearch(customQuery).subscribe((data) => {
-        expect(data).toStrictEqual(RESULT_FIXTURE)
-        done()
-      })
-
+      service.queryLocations(customQuery).subscribe((r) => (items = r))
       httpController
-        .match((request) => {
-          return (
+        .match(
+          (request) =>
             request.url.startsWith(
               'https://api3.geo.admin.ch/rest/services/api/SearchServer'
             ) && request.url.includes('simple+query')
-          )
-        })[0]
+        )[0]
         .flush({ results: RESULT_FIXTURE })
+    })
+    it('should return a list of locations with bbox', () => {
+      expect(items).toStrictEqual([
+        {
+          bbox: [8.446892, 47.319034, 8.627209, 47.43514],
+          label: 'Zurigo (ZH)',
+        },
+        {
+          bbox: [8.446892, 47.319034, 8.627209, 47.43514],
+          label: 'Zurich (ZH)',
+        },
+      ])
     })
   })
 
   describe('request fails', () => {
     it('should send a request to geo admin api with query', (done) => {
       const customQuery = 'simple query'
-      service.getLocationSearch(customQuery).subscribe((data) => {
+      service.queryLocations(customQuery).subscribe((data) => {
         expect(data).toStrictEqual([])
         done()
       })

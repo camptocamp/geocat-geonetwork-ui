@@ -2,9 +2,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { AutocompleteItem } from '@geonetwork-ui/ui/inputs'
 import { TranslateModule } from '@ngx-translate/core'
-import { Observable } from 'rxjs'
+import { Observable, of } from 'rxjs'
 import { LocationSearchComponent } from './location-search.component'
 import { LocationSearchService } from './location-search.service'
+import { SearchFacade } from '../state/search.facade'
+import { LocationBbox } from './location-search-result.model'
 
 @Component({
   selector: 'gn-ui-autocomplete',
@@ -21,59 +23,29 @@ class MockAutoCompleteComponent {
   @Output() inputSubmitted = new EventEmitter<string>()
 }
 
-const RESULT_FIXTURE = [
+const LOCATIONS_FIXTURE: LocationBbox[] = [
   {
-    attrs: {
-      detail: 'zurigo zh',
-      featureId: '261',
-      geom_quadindex: '030003',
-      geom_st_box2d:
-        'BOX(2676224.6939999983 1241584.1049999967,2689665.813000001 1254306.2330000028)',
-      label: '<b>Zurigo (ZH)</b>',
-      lat: 47.37721252441406,
-      lon: 8.527311325073242,
-      num: 1,
-      objectclass: '',
-      origin: 'gg25',
-      rank: 2,
-      x: 1247945.25,
-      y: 2682217,
-      zoomlevel: 4294967295,
-    },
-    id: 153,
-    weight: 7,
+    bbox: [8.446892, 47.319034, 8.627209, 47.43514],
+    label: 'Zurigo (ZH)',
   },
   {
-    attrs: {
-      detail: 'zurich zh',
-      featureId: '261',
-      geom_quadindex: '030003',
-      geom_st_box2d:
-        'BOX(2676224.6939999983 1241584.1049999967,2689665.813000001 1254306.2330000028)',
-      label: '<b>Zurich (ZH)</b>',
-      lat: 47.37721252441406,
-      lon: 8.527311325073242,
-      num: 1,
-      objectclass: '',
-      origin: 'gg25',
-      rank: 2,
-      x: 1247945.25,
-      y: 2682217,
-      zoomlevel: 4294967295,
-    },
-    id: 154,
-    weight: 7,
+    bbox: [8.446892, 47.319034, 8.627209, 47.43514],
+    label: 'Zurich (ZH)',
   },
 ]
 
 class LocationSearchServiceMock {
-  getLocationSearch = jest.fn()
+  queryLocations = jest.fn(() => of(LOCATIONS_FIXTURE))
+}
+class SearchFacadeMock {
+  setLocationFilter = jest.fn()
 }
 
 describe('LocationSearchComponent', () => {
   let component: LocationSearchComponent
   let fixture: ComponentFixture<LocationSearchComponent>
   let service: LocationSearchService
+  let facade: SearchFacade
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -81,11 +53,12 @@ describe('LocationSearchComponent', () => {
       imports: [TranslateModule.forRoot()],
       providers: [
         { provide: LocationSearchService, useClass: LocationSearchServiceMock },
+        { provide: SearchFacade, useClass: SearchFacadeMock },
       ],
     }).compileComponents()
 
     service = TestBed.inject(LocationSearchService)
-
+    facade = TestBed.inject(SearchFacade)
     fixture = TestBed.createComponent(LocationSearchComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
@@ -97,7 +70,7 @@ describe('LocationSearchComponent', () => {
 
   describe('#displayWithFn', () => {
     it('returns the label without html', () => {
-      const result = component.displayWithFn(RESULT_FIXTURE[0])
+      const result = component.displayWithFn(LOCATIONS_FIXTURE[0])
 
       expect(result).toBe('Zurigo (ZH)')
     })
@@ -108,7 +81,35 @@ describe('LocationSearchComponent', () => {
     })
 
     it('calls the location search service', () => {
-      expect(service.getLocationSearch).toHaveBeenCalledWith('test query')
+      expect(service.queryLocations).toHaveBeenCalledWith('test query')
+    })
+  })
+
+  describe('#handleItemSelection', () => {
+    beforeEach(() => {
+      component.handleItemSelection(LOCATIONS_FIXTURE[0])
+    })
+
+    it('calls the search facade with label and bbox', () => {
+      expect(facade.setLocationFilter).toHaveBeenCalledWith(
+        'Zurigo (ZH)',
+        [8.446892, 47.319034, 8.627209, 47.43514]
+      )
+    })
+  })
+
+  describe('#handleInputSubmission', () => {
+    beforeEach(() => {
+      component.handleInputSubmission('zur')
+    })
+    it('calls the location search service with the query', () => {
+      expect(service.queryLocations).toHaveBeenCalledWith('zur')
+    })
+    it('calls the search facade with the first location found', () => {
+      expect(facade.setLocationFilter).toHaveBeenCalledWith(
+        'Zurigo (ZH)',
+        [8.446892, 47.319034, 8.627209, 47.43514]
+      )
     })
   })
 })

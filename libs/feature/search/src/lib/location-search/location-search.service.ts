@@ -1,37 +1,45 @@
 import { Injectable } from '@angular/core'
-import { LocationSearchResultModel } from './location-search-result.model'
+import {
+  LocationBbox,
+  LocationSearchResult,
+} from './location-search-result.model'
 import { catchError, map } from 'rxjs/operators'
 import { HttpClient } from '@angular/common/http'
-import { of } from 'rxjs'
+import { Observable, of } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class LocationSearchService {
   constructor(private http: HttpClient) {}
 
-  getLocationSearch(query: string) {
+  private mapResultToLocation(
+    resultItem: LocationSearchResult['results'][number]
+  ) {
+    return {
+      label: resultItem.attrs.label.replace(/<[^>]*>?/gm, ''),
+      bbox: resultItem.attrs.geom_st_box2d
+        .match(/[-\d.]+/g)
+        .map(Number) as LocationBbox['bbox'],
+    }
+  }
+
+  queryLocations(query: string): Observable<LocationBbox[]> {
     const requestUrl = new URL(
-      'https://api3.geo.admin.ch/rest/services/api/SearchServer?origins=kantone,gg25&bbox=2485410,1078560,2679786,1261608&sortbbox=false&type=locations&sr=2056&lang=fr'
+      'https://api3.geo.admin.ch/rest/services/api/SearchServer'
     )
 
     requestUrl.search = new URLSearchParams({
       origins: 'kantone,gg25',
       type: 'locations',
-      sr: '2056',
+      sr: '4326',
       lang: 'fr',
       searchText: query,
     }).toString()
-    return this.http.get<LocationSearchResultModel>(requestUrl.toString()).pipe(
-      map((responseData) => {
-        return responseData.results
-      }),
+    return this.http.get<LocationSearchResult>(requestUrl.toString()).pipe(
+      map((responseData) => responseData.results.map(this.mapResultToLocation)),
       catchError((error) => {
-        console.warn('Loction search failed')
+        console.warn(`Location search failed: ${error.message}`)
         return of([])
       })
     )
   }
-
-  // attrs.id
-  // 2nd request to get the feature of the selected location?
-  // https://api3.geo.admin.ch/rest/services/api/SearchServer?type=featuresearch&
 }
