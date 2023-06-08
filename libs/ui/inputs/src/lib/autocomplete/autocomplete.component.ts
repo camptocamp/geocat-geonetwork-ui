@@ -47,6 +47,7 @@ export class AutocompleteComponent
   @Input() value?: AutocompleteItem
   @Input() clearOnSelection = false
   @Input() icon = 'search'
+  @Input() minChar = 3
   @Output() itemSelected = new EventEmitter<AutocompleteItem>()
   @Output() inputSubmitted = new EventEmitter<string>()
   @ViewChild(MatAutocompleteTrigger) triggerRef: MatAutocompleteTrigger
@@ -78,7 +79,7 @@ export class AutocompleteComponent
   ngOnInit(): void {
     this.suggestions$ = this.control.valueChanges.pipe(
       tap(() => (this.error = null)),
-      filter((value) => value.length > 2),
+      filter((value) => value.length >= this.minChar),
       debounceTime(400),
       distinctUntilChanged(),
       tap(() => (this.searching = true)),
