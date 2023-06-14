@@ -5,6 +5,7 @@ import { LocationBbox } from './location-search-result.model'
 import { SearchFacade } from '../state/search.facade'
 import { combineLatest, of } from 'rxjs'
 import { map } from 'rxjs/operators'
+import { SearchService } from '@geonetwork-ui/feature/search'
 
 @Component({
   selector: 'gn-ui-location-search',
@@ -20,7 +21,8 @@ export class LocationSearchComponent {
 
   constructor(
     private locationSearchService: LocationSearchService,
-    private searchFacade: SearchFacade
+    private searchFacade: SearchFacade,
+    private searchService: SearchService
   ) {}
 
   displayWithFn = (location: LocationBbox): string => {
@@ -34,12 +36,12 @@ export class LocationSearchComponent {
 
   handleItemSelection(item: AutocompleteItem) {
     const location = item as LocationBbox
-    this.searchFacade.setLocationFilter(location.label, location.bbox)
+    this.searchService.setLocationFilter(location)
   }
 
   handleInputSubmission(inputValue: string) {
     if (inputValue === '') {
-      this.searchFacade.clearLocationFilter()
+      this.searchService.clearLocationFilter()
       return
     }
     this.locationSearchService.queryLocations(inputValue).subscribe((item) => {
@@ -47,7 +49,7 @@ export class LocationSearchComponent {
         console.warn(`No location found for the following query: ${inputValue}`)
         return
       }
-      this.searchFacade.setLocationFilter(item[0].label, item[0].bbox)
+      this.searchService.setLocationFilter(item[0])
     })
   }
 }
