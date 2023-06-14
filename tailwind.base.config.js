@@ -1,4 +1,5 @@
 module.exports = {
+  safelist: [],
   theme: {
     extend: {
       colors: {
