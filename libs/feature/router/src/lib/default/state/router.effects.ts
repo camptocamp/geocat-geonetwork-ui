@@ -3,8 +3,10 @@ import { Inject, Injectable } from '@angular/core'
 import { ActivatedRouteSnapshot, Router } from '@angular/router'
 import { MdViewActions } from '@geonetwork-ui/feature/record'
 import {
+  ClearLocationFilter,
   FieldsService,
   SetFilters,
+  SetLocationFilter,
   SetSortBy,
 } from '@geonetwork-ui/feature/search'
 import { SortByEnum } from '@geonetwork-ui/util/shared'
@@ -59,12 +61,25 @@ export class RouterEffects {
           },
           {}
         )
+        const locationFilterAction = () => {
+          if (!!searchParams.location && !!searchParams.bbox) {
+            return new SetLocationFilter(
+              searchParams.location,
+              searchParams.bbox.split(',').map(Number),
+              this.routerConfig.searchStateId
+            )
+          } else {
+            return new ClearLocationFilter(this.routerConfig.searchStateId)
+          }
+        }
+
         return of(
           new SetFilters(routeFilters, this.routerConfig.searchStateId),
           new SetSortBy(
             searchParams[ROUTE_PARAMS.SORT] || SortByEnum.RELEVANCY,
             this.routerConfig.searchStateId
-          )
+          ),
+          locationFilterAction()
         )
       })
     )

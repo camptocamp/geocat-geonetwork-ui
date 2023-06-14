@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core'
 import { SearchFacade } from '../../state/search.facade'
 import { SearchFilters, SortByEnum } from '@geonetwork-ui/util/shared'
 import { first, map } from 'rxjs/operators'
+import { LocationBbox } from '../../location-search/location-search-result.model'
 
 export interface SearchServiceI {
   updateFilters: (params: SearchFilters) => void
   setFilters: (params: SearchFilters) => void
   setSortAndFilters: (filters: SearchFilters, sort: SortByEnum) => void
   setSortBy: (sort: string) => void
+  setLocationFilter: (location: LocationBbox) => void
+  clearLocationFilter: () => void
 }
 
 @Injectable()
@@ -34,5 +37,13 @@ export class SearchService implements SearchServiceI {
 
   setSortBy(sort: string): void {
     this.facade.setSortBy(sort)
+  }
+
+  setLocationFilter(location: LocationBbox) {
+    this.facade.setLocationFilter(location.label, location.bbox)
+  }
+
+  clearLocationFilter() {
+    this.facade.clearLocationFilter()
   }
 }
