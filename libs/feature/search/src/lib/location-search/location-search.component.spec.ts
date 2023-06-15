@@ -7,6 +7,7 @@ import { LocationSearchComponent } from './location-search.component'
 import { LocationSearchService } from './location-search.service'
 import { SearchFacade } from '../state/search.facade'
 import { LocationBbox } from './location-search-result.model'
+import { SearchService } from '../utils/service/search.service'
 
 @Component({
   selector: 'gn-ui-autocomplete',
@@ -19,6 +20,7 @@ class MockAutoCompleteComponent {
   @Input() clearOnSelection = false
   @Input() icon = 'search'
   @Input() displayWithFn
+  @Input() minChar = 1
   @Output() itemSelected = new EventEmitter<AutocompleteItem>()
   @Output() inputSubmitted = new EventEmitter<string>()
 }
@@ -37,8 +39,14 @@ const LOCATIONS_FIXTURE: LocationBbox[] = [
 class LocationSearchServiceMock {
   queryLocations = jest.fn(() => of(LOCATIONS_FIXTURE))
 }
+
 class SearchFacadeMock {
   setLocationFilter = jest.fn()
+}
+
+class SearchServiceMock {
+  setLocationFilter = jest.fn()
+  clearLocationFilter = jest.fn()
 }
 
 describe('LocationSearchComponent', () => {
@@ -46,6 +54,7 @@ describe('LocationSearchComponent', () => {
   let fixture: ComponentFixture<LocationSearchComponent>
   let service: LocationSearchService
   let facade: SearchFacade
+  let searchService: SearchService
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -54,10 +63,12 @@ describe('LocationSearchComponent', () => {
       providers: [
         { provide: LocationSearchService, useClass: LocationSearchServiceMock },
         { provide: SearchFacade, useClass: SearchFacadeMock },
+        { provide: SearchService, useClass: SearchServiceMock },
       ],
     }).compileComponents()
 
     service = TestBed.inject(LocationSearchService)
+    searchService = TestBed.inject(SearchService)
     facade = TestBed.inject(SearchFacade)
     fixture = TestBed.createComponent(LocationSearchComponent)
     component = fixture.componentInstance
@@ -87,13 +98,15 @@ describe('LocationSearchComponent', () => {
 
   describe('#handleItemSelection', () => {
     beforeEach(() => {
-      component.handleItemSelection(LOCATIONS_FIXTURE[0])
+      component.handleItemSelection({
+        label: 'Zurigo (ZH)',
+        bbox: [8.446892, 47.319034, 8.627209, 47.43514],
+      })
     })
 
-    it('calls the search facade with label and bbox', () => {
-      expect(facade.setLocationFilter).toHaveBeenCalledWith(
-        'Zurigo (ZH)',
-        [8.446892, 47.319034, 8.627209, 47.43514]
+    it('calls the search service with location', () => {
+      expect(searchService.setLocationFilter).toHaveBeenCalledWith(
+        LOCATIONS_FIXTURE[0]
       )
     })
   })
@@ -106,10 +119,10 @@ describe('LocationSearchComponent', () => {
       expect(service.queryLocations).toHaveBeenCalledWith('zur')
     })
     it('calls the search facade with the first location found', () => {
-      expect(facade.setLocationFilter).toHaveBeenCalledWith(
-        'Zurigo (ZH)',
-        [8.446892, 47.319034, 8.627209, 47.43514]
-      )
+      expect(searchService.setLocationFilter).toHaveBeenCalledWith({
+        label: 'Zurigo (ZH)',
+        bbox: [8.446892, 47.319034, 8.627209, 47.43514],
+      })
     })
   })
 })
