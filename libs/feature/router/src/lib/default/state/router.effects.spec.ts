@@ -4,7 +4,12 @@ import { Component } from '@angular/core'
 import { TestBed } from '@angular/core/testing'
 import { Params, Router } from '@angular/router'
 import { MdViewActions } from '@geonetwork-ui/feature/record'
-import { SetFilters, SetSortBy } from '@geonetwork-ui/feature/search'
+import {
+  ClearLocationFilter,
+  SetFilters,
+  SetLocationFilter,
+  SetSortBy,
+} from '@geonetwork-ui/feature/search'
 import { provideMockActions } from '@ngrx/effects/testing'
 import { routerNavigationAction } from '@ngrx/router-store'
 import { Action } from '@ngrx/store'
@@ -19,6 +24,7 @@ import { RouterFacade } from './router.facade'
 import { TranslateModule } from '@ngx-translate/core'
 
 class SearchRouteComponent extends Component {}
+
 class MetadataRouteComponent extends Component {}
 
 const routerConfigMock = {
@@ -31,6 +37,8 @@ const routerFacadeMock = {
   searchParams$: new BehaviorSubject<Params>({
     q: 'any',
     _sort: '-createDate',
+    location: 'Zurich',
+    bbox: '1,2,3,4',
   }),
 }
 
@@ -174,27 +182,29 @@ describe('RouterEffects', () => {
   })
 
   describe('syncSearchState$', () => {
-    describe('when a sort value in the route', () => {
+    describe('when a sort value and location in the route', () => {
       beforeEach(() => {
         actions = hot('-a', { a: routerFacadeMock.searchParams$ })
       })
       it('dispatches SetFilters and SortBy actions', () => {
-        const expected = hot('(ab)', {
+        const expected = hot('(abc)', {
           a: new SetFilters({ any: 'any' }, 'main'),
           b: new SetSortBy('-createDate', 'main'),
+          c: new SetLocationFilter('Zurich', [1, 2, 3, 4], 'main'),
         })
         expect(effects.syncSearchState$).toBeObservable(expected)
       })
     })
-    describe('when no sort value in the route', () => {
+    describe('when no sort value and no location in the route', () => {
       beforeEach(() => {
-        routerFacadeMock.searchParams$.next({ q: 'any' })
+        routerFacadeMock.searchParams$.next({ q: 'any', location: undefined })
         actions = hot('-a', { a: routerFacadeMock.searchParams$ })
       })
       it('dispatches SetFilters and SortBy actions with default sort value', () => {
-        const expected = hot('(ab)', {
+        const expected = hot('(abc)', {
           a: new SetFilters({ any: 'any' }, 'main'),
           b: new SetSortBy('_score', 'main'),
+          c: new ClearLocationFilter('main'),
         })
         expect(effects.syncSearchState$).toBeObservable(expected)
       })
