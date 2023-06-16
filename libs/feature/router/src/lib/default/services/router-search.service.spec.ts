@@ -1,10 +1,13 @@
-import { FieldsService, SearchFacade } from '@geonetwork-ui/feature/search'
+import {
+  FieldsService,
+  LocationBbox,
+  SearchFacade,
+} from '@geonetwork-ui/feature/search'
 import { SortByEnum } from '@geonetwork-ui/util/shared'
 import { BehaviorSubject } from 'rxjs'
 import { RouterFacade } from '../state'
 import { RouterSearchService } from './router-search.service'
-import { LocationBbox } from '../../../../../search/src/lib/location-search/location-search-result.model'
-import { RouterService } from '@geonetwork-ui/feature/router'
+import { RouterService } from '../router.service'
 
 let state = {}
 

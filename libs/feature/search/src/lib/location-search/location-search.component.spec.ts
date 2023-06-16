@@ -7,7 +7,7 @@ import { LocationSearchComponent } from './location-search.component'
 import { LocationSearchService } from './location-search.service'
 import { SearchFacade } from '../state/search.facade'
 import { LocationBbox } from './location-search-result.model'
-import { SearchService } from '@geonetwork-ui/feature/search'
+import { SearchService } from '../utils/service/search.service'
 
 @Component({
   selector: 'gn-ui-autocomplete',

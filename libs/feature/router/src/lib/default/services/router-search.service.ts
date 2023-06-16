@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core'
 import {
   FieldsService,
+  LocationBbox,
   SearchFacade,
   SearchServiceI,
 } from '@geonetwork-ui/feature/search'
 import { SearchFilters, SortByEnum } from '@geonetwork-ui/util/shared'
-import { first, map } from 'rxjs/operators'
 import { ROUTE_PARAMS } from '../constants'
 import { RouterFacade } from '../state/router.facade'
 import { firstValueFrom } from 'rxjs'
-import { LocationBbox } from '../../../../../search/src/lib/location-search/location-search-result.model'
-import { RouterService } from '@geonetwork-ui/feature/router'
+import { RouterService } from '../router.service'
 
 @Injectable()
 export class RouterSearchService implements SearchServiceI {

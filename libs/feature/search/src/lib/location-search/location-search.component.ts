@@ -5,7 +5,7 @@ import { LocationBbox } from './location-search-result.model'
 import { SearchFacade } from '../state/search.facade'
 import { combineLatest, of } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { SearchService } from '@geonetwork-ui/feature/search'
+import { SearchService } from '../utils/service/search.service'
 
 @Component({
   selector: 'gn-ui-location-search',
