@@ -13,7 +13,7 @@ import { SortByEnum } from '@geonetwork-ui/util/shared'
 import { Actions, createEffect, ofType } from '@ngrx/effects'
 import { navigation } from '@nrwl/angular'
 import { of } from 'rxjs'
-import { mergeMap, tap } from 'rxjs/operators'
+import { map, mergeMap, tap } from 'rxjs/operators'
 import { ROUTER_CONFIG, RouterConfigModel } from '../router.module'
 import * as RouterActions from './router.actions'
 import { RouterFacade } from './router.facade'
@@ -47,20 +47,11 @@ export class RouterEffects {
   syncSearchState$ = createEffect(() =>
     this.facade.searchParams$.pipe(
       mergeMap((searchParams) => {
-        const routeFilters = this.fieldsService.supportedFields.reduce(
-          (prev, curr) => {
-            let values = null
-            if (Array.isArray(searchParams[curr])) values = searchParams[curr]
-            else if (typeof searchParams[curr] === 'string')
-              values = [searchParams[curr]]
-            if (!values) return prev
-            return {
-              ...prev,
-              ...this.fieldsService.getFiltersForValues(curr, values),
-            }
-          },
-          {}
-        )
+        return this.fieldsService
+          .getFiltersForFieldValues(searchParams)
+          .pipe(map((filters) => [searchParams, filters]))
+      }),
+      mergeMap(([searchParams, filters]) => {
         const locationFilterAction = () => {
           if (!!searchParams.location && !!searchParams.bbox) {
             return new SetLocationFilter(
@@ -72,9 +63,8 @@ export class RouterEffects {
             return new ClearLocationFilter(this.routerConfig.searchStateId)
           }
         }
-
         return of(
-          new SetFilters(routeFilters, this.routerConfig.searchStateId),
+          new SetFilters(filters, this.routerConfig.searchStateId),
           new SetSortBy(
             searchParams[ROUTE_PARAMS.SORT] || SortByEnum.RELEVANCY,
             this.routerConfig.searchStateId
