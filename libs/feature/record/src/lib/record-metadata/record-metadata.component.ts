@@ -1,11 +1,15 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { SourcesService } from '@geonetwork-ui/feature/catalog'
+import {
+  OrganisationsServiceInterface,
+  SourcesService,
+} from '@geonetwork-ui/feature/catalog'
 import { SearchService } from '@geonetwork-ui/feature/search'
 import { ErrorType } from '@geonetwork-ui/ui/elements'
 import { BehaviorSubject, combineLatest } from 'rxjs'
 import { filter, map, mergeMap, pluck } from 'rxjs/operators'
 import { MdViewFacade } from '../state/mdview.facade'
 import { DatavizConfigurationModel } from '@geonetwork-ui/util/types/data/dataviz-configuration.model'
+import { MetadataContact, Organisation } from '@geonetwork-ui/util/shared'
 
 @Component({
   selector: 'gn-ui-record-metadata',
@@ -55,7 +59,8 @@ export class RecordMetadataComponent {
   constructor(
     public facade: MdViewFacade,
     private searchService: SearchService,
-    private sourceService: SourcesService
+    private sourceService: SourcesService,
+    private orgsService: OrganisationsServiceInterface
   ) {}
 
   onTabIndexChange(index: number): void {
@@ -68,9 +73,9 @@ export class RecordMetadataComponent {
   onInfoKeywordClick(keyword: string) {
     this.searchService.updateFilters({ any: keyword })
   }
-  onContactClick(contactOrgName: string) {
-    this.searchService.updateFilters({
-      OrgForResource: { [contactOrgName]: true },
-    })
+  onContactClick(contact: MetadataContact) {
+    this.orgsService
+      .getFiltersForOrgs([contact as Organisation])
+      .subscribe((filters) => this.searchService.updateFilters(filters))
   }
 }
