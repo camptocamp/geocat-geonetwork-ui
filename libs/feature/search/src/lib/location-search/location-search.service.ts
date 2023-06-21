@@ -28,7 +28,6 @@ export class LocationSearchService {
     )
 
     requestUrl.search = new URLSearchParams({
-      origins: 'kantone,gg25',
       type: 'locations',
       sr: '4326',
       lang: 'fr',

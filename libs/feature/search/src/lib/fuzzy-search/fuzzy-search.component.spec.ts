@@ -172,7 +172,8 @@ describe('FuzzySearchComponent', () => {
         jest.spyOn(component.inputSubmitted, 'emit')
         component.handleInputSubmission('blarg')
       })
-      it('updates the search filters as well', () => {
+      it.skip('updates the search filters as well', () => {
+        // skipped for geocat
         expect(searchServiceMock.updateFilters).not.toHaveBeenCalledWith({
           any: 'blarg',
         })

@@ -1,5 +1,14 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { AutocompleteItem } from '@geonetwork-ui/ui/inputs'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Output,
+  ViewChild,
+} from '@angular/core'
+import {
+  AutocompleteComponent,
+  AutocompleteItem,
+} from '@geonetwork-ui/ui/inputs'
 import { LocationSearchService } from './location-search.service'
 import { LocationBbox } from './location-search-result.model'
 import { SearchFacade } from '../state/search.facade'
@@ -14,6 +23,10 @@ import { SearchService } from '../utils/service/search.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LocationSearchComponent {
+  // specific geocat
+  @Output() inputSubmitted = new EventEmitter<void>()
+  @ViewChild(AutocompleteComponent) autocomplete: AutocompleteComponent
+
   currentLocation$ = combineLatest([
     this.searchFacade.locationFilterLabel$,
     this.searchFacade.locationFilterBbox$,
@@ -35,11 +48,32 @@ export class LocationSearchComponent {
   }
 
   handleItemSelection(item: AutocompleteItem) {
+    this.inputSubmitted.emit() // specific geocat
     const location = item as LocationBbox
     this.searchService.setLocationFilter(location)
   }
 
   handleInputSubmission(inputValue: string) {
+    this.inputSubmitted.emit() // specific geocat
+    if (inputValue === '') {
+      this.searchService.clearLocationFilter()
+      return
+    }
+    this.locationSearchService.queryLocations(inputValue).subscribe((item) => {
+      if (item.length === 0) {
+        console.warn(`No location found for the following query: ${inputValue}`)
+        return
+      }
+      this.searchService.setLocationFilter(item[0])
+    })
+  }
+
+  // specific geocat
+  trigger() {
+    const inputValue = this.autocomplete.control.value
+    if (typeof inputValue !== 'string') {
+      return
+    }
     if (inputValue === '') {
       this.searchService.clearLocationFilter()
       return

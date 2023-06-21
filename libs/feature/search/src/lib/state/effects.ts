@@ -52,15 +52,19 @@ import { FavoritesService } from '../favorites/favorites.service'
 import { Geometry } from 'geojson'
 import { FILTER_GEOMETRY } from '../feature-search.module'
 
+// specific geocat
 function getGeojsonFromBbox(bbox: [number, number, number, number]): Geometry {
+  // making sure there's a minimum delta between the bbox edges
+  const deltaX = Math.abs(bbox[0] - bbox[2]) < 0.001 ? 0.001 : 0
+  const deltaY = Math.abs(bbox[1] - bbox[3]) < 0.001 ? 0.001 : 0
   return {
     type: 'Polygon',
     coordinates: [
       [
         [bbox[0], bbox[1]],
-        [bbox[0], bbox[3]],
-        [bbox[2], bbox[3]],
-        [bbox[2], bbox[1]],
+        [bbox[0], bbox[3] + deltaY],
+        [bbox[2] + deltaX, bbox[3] + deltaY],
+        [bbox[2] + deltaX, bbox[1]],
         [bbox[0], bbox[1]],
       ],
     ],
