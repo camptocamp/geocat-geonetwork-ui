@@ -200,11 +200,9 @@ export class ElasticsearchFieldMapper {
 
   mapLink(sourceLink: SourceWithUnknownProps): MetadataLink | null {
     const url = sourceLink.urlObject['default'] as string
-    console.log(url)
     // no url: fail early
     if (url === null) {
       // TODO: collect errors at the record level?
-      console.log(sourceLink)
       console.warn('A link without valid URL was found', sourceLink)
       return null
     }
