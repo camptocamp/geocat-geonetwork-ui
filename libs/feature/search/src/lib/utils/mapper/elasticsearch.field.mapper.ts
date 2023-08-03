@@ -238,7 +238,7 @@ export class ElasticsearchFieldMapper {
       protocol && protocol.match(/^WWW:DOWNLOAD:(.+\/.+)$/)
     const mimeType = mimeTypeMatches && mimeTypeMatches[1]
 
-    const type = this.getLinkType(url as string, protocol)
+    const type = this.getLinkType(url.toString(), protocol)
 
     return {
       url,
