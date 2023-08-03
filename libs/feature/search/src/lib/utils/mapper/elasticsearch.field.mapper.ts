@@ -199,7 +199,18 @@ export class ElasticsearchFieldMapper {
   }
 
   mapLink(sourceLink: SourceWithUnknownProps): MetadataLink | null {
-    const url = sourceLink.urlObject['default'] as string
+    let url
+    let name
+    let description
+    if (sourceLink.urlObject) {
+      url = sourceLink.urlObject['default'] as string
+      name = sourceLink.nameObject['default']
+      description = sourceLink.descriptionObject['default']
+    } else {
+      url = getAsUrl(selectField<string>(sourceLink, 'url'))
+      name = selectField<string>(sourceLink, 'name')
+      description = selectField<string>(sourceLink, 'description')
+    }
     // no url: fail early
     if (url === null) {
       // TODO: collect errors at the record level?
@@ -217,8 +228,6 @@ export class ElasticsearchFieldMapper {
       return null
     }
 
-    const name = sourceLink.nameObject['default']
-    const description = sourceLink.descriptionObject['default']
     const label = description || name
     const protocol = selectField<string>(sourceLink, 'protocol')
 

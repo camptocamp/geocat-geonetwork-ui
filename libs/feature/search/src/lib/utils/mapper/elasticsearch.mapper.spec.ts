@@ -150,13 +150,15 @@ describe('ElasticsearchMapper', () => {
             hit._source.link = [
               {
                 protocol: 'MY-PROTOCOL',
-                name: 'my data layer',
-                url: 'https://my.website/services/data/',
+                nameObject: { default: 'my data layer' },
+                urlObject: { default: 'https://my.website/services/data/' },
+                descriptionObject: { default: '' },
               },
             ]
           })
           it('parses as a valid link, uses name as label', async () => {
             const summary = await firstValueFrom(service.toRecord(hit))
+            console.log(summary.links)
             expect(summary.links).toEqual([
               {
                 protocol: 'MY-PROTOCOL',
@@ -172,8 +174,11 @@ describe('ElasticsearchMapper', () => {
           beforeEach(() => {
             hit._source.link = [
               {
-                description: 'Download this file!',
-                url: 'https://my.website/services/static/data.csv',
+                urlObject: {
+                  default: 'https://my.website/services/static/data.csv',
+                },
+                descriptionObject: { default: 'Download this file!' },
+                nameObject: { default: '' },
               },
             ]
           })
@@ -193,9 +198,12 @@ describe('ElasticsearchMapper', () => {
           beforeEach(() => {
             hit._source.link = [
               {
-                description: 'Download this file!',
+                descriptionObject: { default: 'Download this file!' },
                 protocol: 'WWW:DOWNLOAD:application/csv',
-                url: 'https://my.website/services/static/data.csv',
+                urlObject: {
+                  default: 'https://my.website/services/static/data.csv',
+                },
+                nameObject: { default: '' },
               },
             ]
           })
@@ -218,7 +226,9 @@ describe('ElasticsearchMapper', () => {
             hit._source.link = [
               {
                 protocol: 'MY-PROTOCOL',
-                url: 'https://abcd:1234:5678/@',
+                urlObject: { default: 'httpsabcd:1234:5678/@' },
+                nameObject: { default: '' },
+                descriptionObject: { default: '' },
               },
             ]
           })
@@ -235,9 +245,10 @@ describe('ElasticsearchMapper', () => {
           beforeEach(() => {
             hit._source.link = [
               {
-                description: 'Download this file!',
+                descriptionObject: { default: 'Download this file!' },
                 protocol: 'FILE',
-                url: 'data:image/png;base64,aaaaabbbbbccccc',
+                urlObject: { default: 'data:image/png;base64,aaaaabbbbbccccc' },
+                nameObject: { default: '' },
               },
             ]
           })
@@ -270,8 +281,10 @@ describe('ElasticsearchMapper', () => {
             hit._source.link = [
               {
                 protocol: 'MYPROTOCOL',
-                url: 'https://abcd/',
+                urlObject: { default: 'https://abcd/' },
                 type: MetadataLinkType.OTHER,
+                descriptionObject: { default: '' },
+                nameObject: { default: '' },
               },
             ]
             summary = await firstValueFrom(service.toRecord(hit))
@@ -288,13 +301,19 @@ describe('ElasticsearchMapper', () => {
             hit._source.link = [
               {
                 protocol: 'OGC:WMS',
-                url: 'https://my.ogc.server/wms',
+                urlObject: { default: 'https://my.ogc.server/wms' },
                 type: MetadataLinkType.WMS,
+                descriptionObject: { default: '' },
+                nameObject: { default: '' },
               },
               {
                 protocol: 'WWW:DOWNLOAD',
-                url: 'http://my.server/files/geographic/dataset.gpkg',
+                urlObject: {
+                  default: 'http://my.server/files/geographic/dataset.gpkg',
+                },
                 type: MetadataLinkType.DOWNLOAD,
+                descriptionObject: { default: '' },
+                nameObject: { default: '' },
               },
             ]
             summary = await firstValueFrom(service.toRecord(hit))
