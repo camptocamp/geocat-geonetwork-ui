@@ -150,15 +150,13 @@ describe('ElasticsearchMapper', () => {
             hit._source.link = [
               {
                 protocol: 'MY-PROTOCOL',
-                nameObject: { default: 'my data layer' },
-                urlObject: { default: 'https://my.website/services/data/' },
-                descriptionObject: { default: '' },
+                name: 'my data layer',
+                url: 'https://my.website/services/data/',
               },
             ]
           })
           it('parses as a valid link, uses name as label', async () => {
             const summary = await firstValueFrom(service.toRecord(hit))
-            console.log(summary.links)
             expect(summary.links).toEqual([
               {
                 protocol: 'MY-PROTOCOL',
@@ -174,11 +172,8 @@ describe('ElasticsearchMapper', () => {
           beforeEach(() => {
             hit._source.link = [
               {
-                urlObject: {
-                  default: 'https://my.website/services/static/data.csv',
-                },
-                descriptionObject: { default: 'Download this file!' },
-                nameObject: { default: '' },
+                description: 'Download this file!',
+                url: 'https://my.website/services/static/data.csv',
               },
             ]
           })
@@ -198,12 +193,9 @@ describe('ElasticsearchMapper', () => {
           beforeEach(() => {
             hit._source.link = [
               {
-                descriptionObject: { default: 'Download this file!' },
+                description: 'Download this file!',
                 protocol: 'WWW:DOWNLOAD:application/csv',
-                urlObject: {
-                  default: 'https://my.website/services/static/data.csv',
-                },
-                nameObject: { default: '' },
+                url: 'https://my.website/services/static/data.csv',
               },
             ]
           })
@@ -226,9 +218,7 @@ describe('ElasticsearchMapper', () => {
             hit._source.link = [
               {
                 protocol: 'MY-PROTOCOL',
-                urlObject: { default: 'httpsabcd:1234:5678/@' },
-                nameObject: { default: '' },
-                descriptionObject: { default: '' },
+                url: 'https://abcd:1234:5678/@',
               },
             ]
           })
@@ -245,10 +235,9 @@ describe('ElasticsearchMapper', () => {
           beforeEach(() => {
             hit._source.link = [
               {
-                descriptionObject: { default: 'Download this file!' },
+                description: 'Download this file!',
                 protocol: 'FILE',
-                urlObject: { default: 'data:image/png;base64,aaaaabbbbbccccc' },
-                nameObject: { default: '' },
+                url: 'data:image/png;base64,aaaaabbbbbccccc',
               },
             ]
           })
@@ -259,6 +248,63 @@ describe('ElasticsearchMapper', () => {
               expect.stringContaining('protocol'),
               expect.any(Object)
             )
+          })
+        })
+        describe('link is multilingual (+ name / description)', () => {
+          beforeEach(() => {
+            hit._source.link = [
+              {
+                descriptionObject: {
+                  default: 'Download this file!',
+                  langfre: 'Téléchargez ce fichier!',
+                },
+                nameObject: {
+                  default: 'My file',
+                  langfre: 'Mon fichier',
+                },
+                protocol: 'MY-PROTOCOL',
+                urlObject: {
+                  default: 'https://my.website/services/static/data.csv',
+                  langfre: 'https://my.website/services/static/data.csv',
+                },
+              },
+            ]
+          })
+          it('parse the link correctly', async () => {
+            const summary = await firstValueFrom(service.toRecord(hit))
+            expect(summary.links).toEqual([
+              {
+                protocol: 'MY-PROTOCOL',
+                name: 'My file',
+                label: 'Download this file!',
+                description: 'Download this file!',
+                url: 'https://my.website/services/static/data.csv',
+                type: MetadataLinkType.OTHER,
+              },
+            ])
+          })
+        })
+        describe('link is multilingual (no name and description)', () => {
+          beforeEach(() => {
+            hit._source.link = [
+              {
+                protocol: 'MY-PROTOCOL',
+                urlObject: {
+                  default: 'https://my.website/services/static/data.csv',
+                  langfre: 'https://my.website/services/static/data.csv',
+                },
+              },
+            ]
+          })
+          it('parse the link correctly', async () => {
+            const summary = await firstValueFrom(service.toRecord(hit))
+            expect(summary.links).toEqual([
+              {
+                protocol: 'MY-PROTOCOL',
+                url: 'https://my.website/services/static/data.csv',
+                type: MetadataLinkType.OTHER,
+              },
+            ])
           })
         })
       })
@@ -281,10 +327,8 @@ describe('ElasticsearchMapper', () => {
             hit._source.link = [
               {
                 protocol: 'MYPROTOCOL',
-                urlObject: { default: 'https://abcd/' },
+                url: 'https://abcd/',
                 type: MetadataLinkType.OTHER,
-                descriptionObject: { default: '' },
-                nameObject: { default: '' },
               },
             ]
             summary = await firstValueFrom(service.toRecord(hit))
@@ -301,19 +345,13 @@ describe('ElasticsearchMapper', () => {
             hit._source.link = [
               {
                 protocol: 'OGC:WMS',
-                urlObject: { default: 'https://my.ogc.server/wms' },
+                url: 'https://my.ogc.server/wms',
                 type: MetadataLinkType.WMS,
-                descriptionObject: { default: '' },
-                nameObject: { default: '' },
               },
               {
                 protocol: 'WWW:DOWNLOAD',
-                urlObject: {
-                  default: 'http://my.server/files/geographic/dataset.gpkg',
-                },
+                url: 'http://my.server/files/geographic/dataset.gpkg',
                 type: MetadataLinkType.DOWNLOAD,
-                descriptionObject: { default: '' },
-                nameObject: { default: '' },
               },
             ]
             summary = await firstValueFrom(service.toRecord(hit))

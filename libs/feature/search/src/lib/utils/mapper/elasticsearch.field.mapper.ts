@@ -199,18 +199,21 @@ export class ElasticsearchFieldMapper {
   }
 
   mapLink(sourceLink: SourceWithUnknownProps): MetadataLink | null {
-    let url
-    let name
-    let description
-    if (sourceLink.urlObject) {
-      url = sourceLink.urlObject['default'] as string
-      name = sourceLink.nameObject['default']
-      description = sourceLink.descriptionObject['default']
-    } else {
-      url = getAsUrl(selectField<string>(sourceLink, 'url'))
-      name = selectField<string>(sourceLink, 'name')
-      description = selectField<string>(sourceLink, 'description')
-    }
+    const url = getAsUrl(
+      selectFallback(
+        selectTranslatedField<string>(sourceLink, 'urlObject'),
+        selectField<string>(sourceLink, 'url')
+      )
+    )
+    const name = selectFallback(
+      selectTranslatedField<string>(sourceLink, 'nameObject'),
+      selectField<string>(sourceLink, 'name')
+    )
+    const description = selectFallback(
+      selectTranslatedField<string>(sourceLink, 'descriptionObject'),
+      selectField<string>(sourceLink, 'description')
+    )
+
     // no url: fail early
     if (url === null) {
       // TODO: collect errors at the record level?
@@ -218,7 +221,7 @@ export class ElasticsearchFieldMapper {
       return null
     }
 
-    const protocolMatch = /^(https?|ftp):/.test(url as string)
+    const protocolMatch = /^(https?|ftp):/.test(url)
     if (!protocolMatch) {
       // TODO: collect errors at the record level?
       console.warn(
