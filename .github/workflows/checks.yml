@@ -10,7 +10,7 @@ env:
 on:
   push:
     branches:
-      - main
+      - geocat
   pull_request:
     types: [opened, synchronize, ready_for_review]
 
@@ -18,7 +18,7 @@ on:
 # on QA checks
 concurrency:
   group: checks-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref_name != 'main' }}
+  cancel-in-progress: ${{ github.ref_name != 'geocat' }}
 
 jobs:
   format-lint-test:
@@ -40,16 +40,16 @@ jobs:
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
         with:
-          main-branch-name: 'main'
+          main-branch-name: 'geocat'
       - run: npm ci
       - run: npx nx format:check
       - run: npx nx affected -t lint --parallel=3
       - run: npx nx affected -t test --parallel=3 --configuration=ci --ci --codeCoverage --coverageReporters=lcov
 
-      - name: Coveralls
-        uses: coverallsapp/github-action@v2
-        with:
-          allow-empty: true
+  #    - name: Coveralls
+  #      uses: coverallsapp/github-action@v2
+  #      with:
+  #        allow-empty: true
 
   #      - name: Archive Code Coverage Results (on main)
   #        if: github.event_name != 'pull_request'
@@ -91,7 +91,7 @@ jobs:
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
         with:
-          main-branch-name: 'main'
+          main-branch-name: 'geocat'
       - run: npm ci
       - run: npx nx affected -t build --parallel=3
 
@@ -115,6 +115,8 @@ jobs:
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: 'geocat'
 
       - name: Install dependencies
         run: npm ci
@@ -145,6 +147,7 @@ jobs:
   cypress-run:
     name: End-to-end tests
     runs-on: ubuntu-latest
+    if: false # skip for geocat
     outputs:
       screenshotsUrl: ${{ steps.upload-screenshots.outputs.artifact-url }}
     steps:
