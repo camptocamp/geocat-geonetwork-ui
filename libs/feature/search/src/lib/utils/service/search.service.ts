@@ -5,6 +5,7 @@ import {
   SortByField,
 } from '@geonetwork-ui/common/domain/model/search'
 import { first, map } from 'rxjs/operators'
+import { LocationBbox } from '../../location-search/location-search-result.model'
 
 export interface SearchServiceI {
   updateFilters: (params: FieldFilters) => void
@@ -12,6 +13,8 @@ export interface SearchServiceI {
   setSortAndFilters: (filters: FieldFilters, sort: SortByField) => void
   setSortBy: (sort: SortByField) => void
   setPage: (page: number) => void
+  setLocationFilter: (location: LocationBbox) => void
+  clearLocationFilter: () => void
 }
 
 @Injectable()
@@ -38,6 +41,14 @@ export class SearchService implements SearchServiceI {
 
   setSortBy(sort: SortByField): void {
     this.facade.setSortBy(sort)
+  }
+
+  setLocationFilter(location: LocationBbox) {
+    this.facade.setLocationFilter(location.label, location.bbox)
+  }
+
+  clearLocationFilter() {
+    this.facade.clearLocationFilter()
   }
 
   setPage(page: number): void {
