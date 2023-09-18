@@ -10,7 +10,7 @@ env:
 on:
   push:
     branches:
-      - main
+      - geocat
   pull_request:
     types: [opened, synchronize, ready_for_review]
 
@@ -18,7 +18,7 @@ on:
 # on QA checks
 concurrency:
   group: checks-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref_name != 'main' }}
+  cancel-in-progress: ${{ github.ref_name != 'geocat' }}
 
 jobs:
   format-lint-test:
@@ -38,16 +38,19 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
+        uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: 'geocat'
+          fallback-sha: b5fac1a33b5c4df0f5db183ae09e956f3a327f51
       - run: npm ci
       - run: npx nx format:check
       - run: npx nx affected -t lint --parallel=3
       - run: npx nx affected -t test --parallel=3 --configuration=ci --ci --codeCoverage --coverageReporters=lcov
 
-      - name: Coveralls
-        uses: coverallsapp/github-action@v2
-        with:
-          allow-empty: true
+  #    - name: Coveralls
+  #      uses: coverallsapp/github-action@v2
+  #      with:
+  #        allow-empty: true
 
   #      - name: Archive Code Coverage Results (on main)
   #        if: github.event_name != 'pull_request'
@@ -87,7 +90,10 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
+        uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: 'geocat'
+          fallback-sha: b5fac1a33b5c4df0f5db183ae09e956f3a327f51
       - run: npm ci
       - run: npx nx affected -t build --parallel=3
 
@@ -110,7 +116,10 @@ jobs:
           cache: 'npm'
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
+        uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: 'geocat'
+          fallback-sha: b5fac1a33b5c4df0f5db183ae09e956f3a327f51
 
       - name: Install dependencies
         run: npm ci
@@ -141,6 +150,7 @@ jobs:
   e2e-run:
     name: E2E tests / ${{ matrix.app }} / GN v${{ matrix.gn_version }}
     runs-on: ubuntu-latest
+    if: false # skip for geocat
     strategy:
       fail-fast: false
       matrix:
@@ -162,7 +172,10 @@ jobs:
           cache: 'npm'
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
+        uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: 'geocat'
+          fallback-sha: b5fac1a33b5c4df0f5db183ae09e956f3a327f51
 
       - name: Create pipeline docker image
         working-directory: tools
