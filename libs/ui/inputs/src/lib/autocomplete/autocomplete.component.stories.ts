@@ -1,10 +1,16 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 import {
   AutocompleteComponent,
   AutocompleteItem,
 } from './autocomplete.component'
 import { Observable, of, throwError } from 'rxjs'
 import { TranslateModule } from '@ngx-translate/core'
+import { importProvidersFrom } from '@angular/core'
 import {
   TRANSLATE_DEFAULT_CONFIG,
   UtilI18nModule,
@@ -22,6 +28,9 @@ export default {
         TranslateModule.forRoot(TRANSLATE_DEFAULT_CONFIG),
         BrowserAnimationsModule,
       ],
+    }),
+    applicationConfig({
+      providers: [importProvidersFrom(BrowserAnimationsModule)],
     }),
   ],
 } as Meta<AutocompleteComponent>
@@ -74,6 +83,7 @@ export const NoSubmit: StoryObj<AutocompleteComponentWithActionResult> = {
     placeholder: 'This will only show suggestions, there is no submit button',
     minCharacterCount: 3,
     actionThrowsError: false,
+    icon: 'matPinDropOutline',
     clearOnSelection: false,
     allowSubmit: false,
   },
@@ -86,6 +96,12 @@ export const NoSubmit: StoryObj<AutocompleteComponentWithActionResult> = {
     },
     actionThrowsError: {
       type: 'boolean',
+    },
+    icon: {
+      control: {
+        type: 'select',
+        options: ['matPinDropOutline', 'matSearchOutline', 'matHomeOutline'],
+      },
     },
   },
   render: (args) => ({
