@@ -92,3 +92,12 @@ export const getSpatialFilterEnabled = createSelector(
   getSearchStateSearch,
   (state: SearchStateSearch) => state.params.useSpatialFilter
 )
+
+export const getLocationFilterLabel = createSelector(
+  getSearchStateSearch,
+  (state: SearchStateSearch) => state.params.locationLabel
+)
+export const getLocationFilterBbox = createSelector(
+  getSearchStateSearch,
+  (state: SearchStateSearch) => state.params.locationBbox
+)

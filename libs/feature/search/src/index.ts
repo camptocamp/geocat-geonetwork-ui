@@ -21,3 +21,7 @@ export * from './lib/results-layout/results-layout.component'
 export * from './lib/sort-by/sort-by.component'
 export * from './lib/state/container/search-state.container.directive'
 export * from './lib/results-table/results-table.component'
+
+// specific geocat
+export * from './lib/location-search/location-search-result.model'
+export * from './lib/location-search/location-search.component'

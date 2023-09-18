@@ -1,0 +1,10 @@
+<gn-ui-autocomplete
+  [placeholder]="'search.field.location.placeholder' | translate"
+  [displayWithFn]="displayWithFn"
+  [action]="autoCompleteAction"
+  (itemSelected)="handleItemSelection($event)"
+  (inputSubmitted)="handleInputSubmission($event)"
+  icon="pin_drop"
+  [value]="currentLocation$ | async"
+  [minChar]="1"
+></gn-ui-autocomplete>

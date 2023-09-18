@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import {
   FieldsService,
+  LocationBbox,
   SearchFacade,
   SearchServiceI,
 } from '@geonetwork-ui/feature/search'
@@ -11,6 +12,7 @@ import {
 import { ROUTE_PARAMS, SearchRouteParams } from '../constants'
 import { RouterFacade } from '../state/router.facade'
 import { firstValueFrom } from 'rxjs'
+import { RouterService } from '../router.service'
 import { sortByToString } from '@geonetwork-ui/util/shared'
 
 @Injectable()
@@ -18,7 +20,8 @@ export class RouterSearchService implements SearchServiceI {
   constructor(
     private searchFacade: SearchFacade,
     private facade: RouterFacade,
-    private fieldsService: FieldsService
+    private fieldsService: FieldsService,
+    private routerService: RouterService
   ) {}
 
   setSortAndFilters(filters: FieldFilters, sortBy: SortByField) {
@@ -63,6 +66,22 @@ export class RouterSearchService implements SearchServiceI {
   setPage(page: number): void {
     this.facade.updateSearch({
       [ROUTE_PARAMS.PAGE]: page,
+    })
+  }
+
+  setLocationFilter(location: LocationBbox) {
+    this.facade.go({
+      path: this.routerService.getSearchRoute(),
+      query: { location: location.label, bbox: location.bbox.join() },
+      queryParamsHandling: 'merge',
+    })
+  }
+
+  clearLocationFilter() {
+    this.facade.go({
+      path: this.routerService.getSearchRoute(),
+      query: { location: undefined, bbox: undefined },
+      queryParamsHandling: 'merge',
     })
   }
 }

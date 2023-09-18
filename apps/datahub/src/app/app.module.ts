@@ -80,6 +80,7 @@ import { RecordOtherlinksComponent } from './record/record-otherlinks/record-oth
 import { RecordDownloadsComponent } from './record/record-downloads/record-downloads.component'
 import { RecordApisComponent } from './record/record-apis/record-apis.component'
 import { MatTabsModule } from '@angular/material/tabs'
+import { ORGANIZATIONS_STRATEGY } from '@geonetwork-ui/api/repository/gn4'
 
 export const metaReducers: MetaReducer[] = !environment.production ? [] : []
 // https://github.com/nrwl/nx/issues/191
@@ -200,6 +201,10 @@ export const metaReducers: MetaReducer[] = !environment.production ? [] : []
     {
       provide: ORGANIZATION_URL_TOKEN,
       useValue: `${ROUTER_ROUTE_SEARCH}?${ROUTE_PARAMS.PUBLISHER}=\${name}`,
+    },
+    {
+      provide: ORGANIZATIONS_STRATEGY,
+      useValue: 'groups',
     },
   ],
   bootstrap: [AppComponent],

@@ -245,6 +245,27 @@ export class SetSpatialFilterEnabled extends AbstractAction implements Action {
     super(id)
   }
 }
+
+// geocat specific
+export const SET_LOCATION_FILTER = '[Search] Set Location Filter'
+export class SetLocationFilter extends AbstractAction implements Action {
+  readonly type = SET_LOCATION_FILTER
+  constructor(
+    public label: string,
+    public bbox: [number, number, number, number],
+    id?: string
+  ) {
+    super(id)
+  }
+}
+export const CLEAR_LOCATION_FILTER = '[Search] Clear Location Filter'
+export class ClearLocationFilter extends AbstractAction implements Action {
+  readonly type = CLEAR_LOCATION_FILTER
+  constructor(id?: string) {
+    super(id)
+  }
+}
+
 export type SearchActions =
   | AddSearch
   | SetConfigFilters
@@ -271,3 +292,5 @@ export type SearchActions =
   | SetError
   | ClearError
   | SetSpatialFilterEnabled
+  | SetLocationFilter
+  | ClearLocationFilter

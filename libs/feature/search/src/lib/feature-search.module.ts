@@ -23,6 +23,7 @@ import { FilterDropdownComponent } from './filter-dropdown/filter-dropdown.compo
 import { UiWidgetsModule } from '@geonetwork-ui/ui/widgets'
 import { RecordsRepositoryInterface } from '@geonetwork-ui/common/domain/repository/records-repository.interface'
 import { Gn4Repository } from '@geonetwork-ui/api/repository'
+import { LocationSearchComponent } from './location-search/location-search.component'
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { Gn4Repository } from '@geonetwork-ui/api/repository'
     SearchStateContainerDirective,
     FavoriteStarComponent,
     FilterDropdownComponent,
+    LocationSearchComponent,
   ],
   imports: [
     CommonModule,
@@ -63,6 +65,7 @@ import { Gn4Repository } from '@geonetwork-ui/api/repository'
     SearchStateContainerDirective,
     FavoriteStarComponent,
     FilterDropdownComponent,
+    LocationSearchComponent,
   ],
   providers: [
     {

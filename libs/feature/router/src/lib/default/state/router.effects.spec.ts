@@ -5,9 +5,11 @@ import { TestBed } from '@angular/core/testing'
 import { Params, Router } from '@angular/router'
 import { MdViewActions } from '@geonetwork-ui/feature/record'
 import {
+  ClearLocationFilter,
   FieldsService,
   Paginate,
   SetFilters,
+  SetLocationFilter,
   SetSortBy,
 } from '@geonetwork-ui/feature/search'
 import { provideMockActions } from '@ngrx/effects/testing'
@@ -24,6 +26,7 @@ import { ROUTER_CONFIG } from '../router.config'
 import { ROUTE_PARAMS } from '../constants'
 
 class SearchRouteComponent extends Component {}
+
 class MetadataRouteComponent extends Component {}
 
 const routerConfigMock = {
@@ -40,6 +43,8 @@ const initialParams: Params = {
   q: 'any',
   [ROUTE_PARAMS.SORT]: '-createDate',
   [ROUTE_PARAMS.PAGE]: '2',
+  [ROUTE_PARAMS.LOCATION]: 'Zurich',
+  [ROUTE_PARAMS.BBOX]: '1,2,3,4',
 }
 
 class FieldsServiceMock {
@@ -220,7 +225,7 @@ describe('RouterEffects', () => {
   })
 
   describe('syncSearchState$', () => {
-    describe('when a sort value in the route', () => {
+    describe('when a sort value and location in the route', () => {
       beforeEach(() => {
         routerFacade.searchParams$ = hot('-a', {
           a: initialParams,
@@ -228,17 +233,18 @@ describe('RouterEffects', () => {
         effects = TestBed.inject(fromEffects.RouterEffects)
       })
       it('dispatches SetFilters, SortBy, Paginate actions on initial params', () => {
-        const expected = hot('-(abc)', {
+        const expected = hot('-(abcd)', {
           a: new SetFilters({ any: 'any' }, 'main'),
           b: new SetSortBy(['desc', 'createDate'], 'main'),
           c: new Paginate(2, 'main'),
+          d: new SetLocationFilter('Zurich', [1, 2, 3, 4], 'main'),
         })
         expect(effects.syncSearchState$).toBeObservable(expected)
       })
     })
     describe('when no sort or page value in the route', () => {
       beforeEach(() => {
-        routerFacade.searchParams$ = hot('-a----b', {
+        routerFacade.searchParams$ = hot('-a-----b', {
           a: initialParams,
           b: {
             q: 'any',
@@ -246,20 +252,22 @@ describe('RouterEffects', () => {
         })
         effects = TestBed.inject(fromEffects.RouterEffects)
       })
-      it('dispatches SetFilters and SortBy and Paginate actions with default sort value', () => {
-        const expected = hot('-(abc)(de)', {
+      it('dispatches SetFilters and SortBy and Paginate actions with default sort value, and clears location filter', () => {
+        const expected = hot('-(abcd)(efg)', {
           a: new SetFilters({ any: 'any' }, 'main'),
           b: new SetSortBy(['desc', 'createDate'], 'main'),
           c: new Paginate(2, 'main'),
-          d: new SetSortBy(['desc', '_score'], 'main'),
-          e: new Paginate(1, 'main'),
+          d: new SetLocationFilter('Zurich', [1, 2, 3, 4], 'main'),
+          e: new SetSortBy(['desc', '_score'], 'main'),
+          f: new Paginate(1, 'main'),
+          g: new ClearLocationFilter('main'),
         })
         expect(effects.syncSearchState$).toBeObservable(expected)
       })
     })
     describe('when a page number is in the route', () => {
       beforeEach(() => {
-        routerFacade.searchParams$ = hot('-a----b', {
+        routerFacade.searchParams$ = hot('-a-----b', {
           a: initialParams,
           b: {
             q: 'any',
@@ -269,19 +277,21 @@ describe('RouterEffects', () => {
         effects = TestBed.inject(fromEffects.RouterEffects)
       })
       it('dispatches Paginate action accordingly', () => {
-        const expected = hot('-(abc)(de)', {
+        const expected = hot('-(abcd)(efg)', {
           a: new SetFilters({ any: 'any' }, 'main'),
           b: new SetSortBy(['desc', 'createDate'], 'main'),
           c: new Paginate(2, 'main'),
-          d: new SetSortBy(['desc', '_score'], 'main'),
-          e: new Paginate(12, 'main'),
+          d: new SetLocationFilter('Zurich', [1, 2, 3, 4], 'main'),
+          e: new SetSortBy(['desc', '_score'], 'main'),
+          f: new Paginate(12, 'main'),
+          g: new ClearLocationFilter('main'),
         })
         expect(effects.syncSearchState$).toBeObservable(expected)
       })
     })
     describe('when only the sort param changes', () => {
       beforeEach(() => {
-        routerFacade.searchParams$ = hot('-a----b----c', {
+        routerFacade.searchParams$ = hot('-a-----b-----c', {
           a: initialParams,
           b: {
             [ROUTE_PARAMS.PAGE]: '12',
@@ -295,28 +305,31 @@ describe('RouterEffects', () => {
         effects = TestBed.inject(fromEffects.RouterEffects)
       })
       it('only dispatches a SortBy action', () => {
-        const expected = hot('-(abc)(def)g', {
+        const expected = hot('-(abcd)(efgh)i', {
           a: new SetFilters({ any: 'any' }, 'main'),
           b: new SetSortBy(['desc', 'createDate'], 'main'),
           c: new Paginate(2, 'main'),
-          d: new SetFilters({}, 'main'),
-          e: new SetSortBy(['asc', 'createDate'], 'main'),
-          f: new Paginate(12, 'main'),
-          g: new SetSortBy(['desc', 'title'], 'main'),
+          d: new SetLocationFilter('Zurich', [1, 2, 3, 4], 'main'),
+          e: new SetFilters({}, 'main'),
+          f: new SetSortBy(['asc', 'createDate'], 'main'),
+          g: new Paginate(12, 'main'),
+          h: new ClearLocationFilter('main'),
+          i: new SetSortBy(['desc', 'title'], 'main'),
         })
         expect(effects.syncSearchState$).toBeObservable(expected)
       })
     })
     describe('when identical params are received', () => {
       beforeEach(() => {
-        routerFacade.searchParams$ = hot('-a----a', { a: initialParams })
+        routerFacade.searchParams$ = hot('-a-----a', { a: initialParams })
         effects = TestBed.inject(fromEffects.RouterEffects)
       })
       it('dispatches no action', () => {
-        const expected = hot('-(abc)-', {
+        const expected = hot('-(abcd)-', {
           a: new SetFilters({ any: 'any' }, 'main'),
           b: new SetSortBy(['desc', 'createDate'], 'main'),
           c: new Paginate(2, 'main'),
+          d: new SetLocationFilter('Zurich', [1, 2, 3, 4], 'main'),
         })
         expect(effects.syncSearchState$).toBeObservable(expected)
       })
