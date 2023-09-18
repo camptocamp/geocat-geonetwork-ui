@@ -10,3 +10,7 @@ export * from './lib/results-list/results-list.container.component'
 export * from './lib/filter-dropdown/filter-dropdown.component'
 export * from './lib/constants'
 export * from './lib/fuzzy-search/fuzzy-search.component'
+
+// specific geocat
+export * from './lib/location-search/location-search-result.model'
+export * from './lib/location-search/location-search.component'

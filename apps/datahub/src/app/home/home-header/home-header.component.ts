@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild,
+} from '@angular/core'
 import { marker } from '@biesbjerg/ngx-translate-extract-marker'
 import {
   RouterFacade,
@@ -6,6 +11,8 @@ import {
 } from '@geonetwork-ui/feature/router'
 import {
   FieldsService,
+  FuzzySearchComponent,
+  LocationSearchComponent,
   SearchFacade,
   SearchService,
 } from '@geonetwork-ui/feature/search'
@@ -36,6 +43,11 @@ marker('datahub.header.popularRecords')
 })
 export class HomeHeaderComponent {
   @Input() expandRatio: number
+
+  // specific geocat: used to trigger the other field when one is triggered
+  @ViewChild(FuzzySearchComponent)
+  textSearch: FuzzySearchComponent
+  @ViewChild(LocationSearchComponent) locationSearch: LocationSearchComponent
 
   backgroundCss =
     getThemeConfig().HEADER_BACKGROUND ||
@@ -90,5 +102,13 @@ export class HomeHeaderComponent {
     } else {
       this.searchService.setFilters(searchFilters)
     }
+  }
+
+  // specific geocat
+  updateLocationFilter() {
+    this.locationSearch.trigger()
+  }
+  updateTextFilter() {
+    this.textSearch.trigger()
   }
 }

@@ -1,12 +1,15 @@
 import { SortByEnum } from '@geonetwork-ui/common/domain/search'
 import { BehaviorSubject } from 'rxjs'
 import { SearchService } from './search.service'
+import { LocationBbox } from '../../location-search/location-search-result.model'
 
 const state = { Org: 'mel' }
 const facadeMock: any = {
   setFilters: jest.fn(),
   setSortBy: jest.fn(),
   searchFilters$: new BehaviorSubject(state),
+  setLocationFilter: jest.fn(),
+  clearLocationFilter: jest.fn(),
 }
 describe('SearchService', () => {
   let service: SearchService
@@ -64,6 +67,35 @@ describe('SearchService', () => {
           any: 'any',
           Org: 'mel',
         })
+      })
+    })
+  })
+
+  describe('#setLocationFilter', () => {
+    describe('#setLocationFilter', () => {
+      beforeEach(() => {
+        const location: LocationBbox = {
+          label: 'Great Location',
+          bbox: [1, 2, 3, 4],
+        }
+        service.setLocationFilter(location)
+      })
+      it('dispatch setLocationFilter with merged params', () => {
+        expect(facadeMock.setLocationFilter).toHaveBeenCalledWith(
+          'Great Location',
+          [1, 2, 3, 4]
+        )
+      })
+    })
+  })
+
+  describe('#clearLocationFilter', () => {
+    describe('#clearLocationFilter', () => {
+      beforeEach(() => {
+        service.clearLocationFilter()
+      })
+      it('dispatch clearLocationFilter without params', () => {
+        expect(facadeMock.clearLocationFilter).toHaveBeenCalledWith()
       })
     })
   })

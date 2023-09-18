@@ -47,6 +47,8 @@ export class AutocompleteComponent
   @Input() action: (value: string) => Observable<AutocompleteItem[]>
   @Input() value?: AutocompleteItem
   @Input() clearOnSelection = false
+  @Input() icon = 'search'
+  @Input() minChar = 3
   @Output() itemSelected = new EventEmitter<AutocompleteItem>()
   @Output() inputSubmitted = new EventEmitter<string>()
   @ViewChild(MatAutocompleteTrigger) triggerRef: MatAutocompleteTrigger
@@ -79,7 +81,7 @@ export class AutocompleteComponent
     this.suggestions$ = merge(
       this.control.valueChanges.pipe(
         filter((value) => typeof value === 'string'),
-        filter((value: string) => value.length > 2),
+        filter((value: string) => value.length >= this.minChar),
         debounceTime(400),
         distinctUntilChanged(),
         tap(() => (this.searching = true))

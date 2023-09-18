@@ -24,6 +24,7 @@ import { Geometry } from 'geojson'
 import { UiWidgetsModule } from '@geonetwork-ui/ui/widgets'
 import { RecordsRepositoryInterface } from '@geonetwork-ui/common/domain/records-repository.interface'
 import { Gn4Repository } from '@geonetwork-ui/api/repository/gn4'
+import { LocationSearchComponent } from './location-search/location-search.component'
 
 // this geometry will be used to filter & boost results accordingly
 export const FILTER_GEOMETRY = new InjectionToken<Promise<Geometry>>(
@@ -44,6 +45,7 @@ export const RECORD_URL_TOKEN = new InjectionToken<string>('record-url-token')
     SearchStateContainerDirective,
     FavoriteStarComponent,
     FilterDropdownComponent,
+    LocationSearchComponent,
   ],
   imports: [
     CommonModule,
@@ -72,6 +74,7 @@ export const RECORD_URL_TOKEN = new InjectionToken<string>('record-url-token')
     SearchStateContainerDirective,
     FavoriteStarComponent,
     FilterDropdownComponent,
+    LocationSearchComponent,
   ],
   providers: [
     {

@@ -3,6 +3,7 @@ import { select, Store } from '@ngrx/store'
 import { from, Observable, of } from 'rxjs'
 import {
   AddSearch,
+  ClearLocationFilter,
   ClearResults,
   DEFAULT_SEARCH_KEY,
   Paginate,
@@ -14,6 +15,7 @@ import {
   SetFavoritesOnly,
   SetFilters,
   SetIncludeOnAggregation,
+  SetLocationFilter,
   SetPageSize,
   SetResultsLayout,
   SetSearch,
@@ -27,6 +29,8 @@ import {
   currentPage,
   getError,
   getFavoritesOnly,
+  getLocationFilterBbox,
+  getLocationFilterLabel,
   getSearchConfigAggregations,
   getSearchFilters,
   getSearchResults,
@@ -74,6 +78,8 @@ export class SearchFacade {
     catchError(() => of(false)),
     shareReplay(1)
   )
+  locationFilterLabel$: Observable<string>
+  locationFilterBbox$: Observable<[number, number, number, number]>
 
   searchId: string
 
@@ -113,6 +119,13 @@ export class SearchFacade {
     this.error$ = this.store.pipe(select(getError, searchId))
     this.spatialFilterEnabled$ = this.store.pipe(
       select(getSpatialFilterEnabled, searchId)
+    )
+
+    this.locationFilterLabel$ = this.store.pipe(
+      select(getLocationFilterLabel, searchId)
+    )
+    this.locationFilterBbox$ = this.store.pipe(
+      select(getLocationFilterBbox, searchId)
     )
   }
 
@@ -207,6 +220,19 @@ export class SearchFacade {
 
   setSpatialFilterEnabled(enabled: boolean) {
     this.store.dispatch(new SetSpatialFilterEnabled(enabled, this.searchId))
+    return this
+  }
+
+  setLocationFilter(
+    label: string,
+    bbox: [number, number, number, number]
+  ): SearchFacade {
+    this.store.dispatch(new SetLocationFilter(label, bbox, this.searchId))
+    return this
+  }
+
+  clearLocationFilter(): SearchFacade {
+    this.store.dispatch(new ClearLocationFilter(this.searchId))
     return this
   }
 

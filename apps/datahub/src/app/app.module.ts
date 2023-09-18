@@ -70,6 +70,7 @@ import { METADATA_LANGUAGE } from '@geonetwork-ui/api/repository'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { GN_UI_VERSION } from '@geonetwork-ui/feature/record'
 import { LOGIN_URL } from '@geonetwork-ui/api/repository/gn4'
+import { ORGANIZATIONS_STRATEGY } from '@geonetwork-ui/api/repository/gn4'
 
 export const metaReducers: MetaReducer[] = !environment.production ? [] : []
 // https://github.com/nrwl/nx/issues/191
@@ -189,6 +190,10 @@ export const metaReducers: MetaReducer[] = !environment.production ? [] : []
     {
       provide: ORGANIZATION_URL_TOKEN,
       useValue: `${ROUTER_ROUTE_SEARCH}?${ROUTE_PARAMS.PUBLISHER}=\${name}`,
+    },
+    {
+      provide: ORGANIZATIONS_STRATEGY,
+      useValue: 'groups',
     },
   ],
   bootstrap: [AppComponent],

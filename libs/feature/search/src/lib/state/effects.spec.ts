@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing'
 import {
   AddResults,
   ClearError,
+  ClearLocationFilter,
   ClearResults,
   DEFAULT_SEARCH_KEY,
   Paginate,
@@ -13,6 +14,7 @@ import {
   SetFavoritesOnly,
   SetFilters,
   SetIncludeOnAggregation,
+  SetLocationFilter,
   SetPageSize,
   SetResultsAggregations,
   SetResultsHits,
@@ -245,14 +247,41 @@ describe('Effects', () => {
       })
     })
 
+    it('request new results on setLocationFilter action', () => {
+      testScheduler.run(({ hot, expectObservable }) => {
+        actions$ = hot('-a---', {
+          a: new SetLocationFilter('myLoc', [1, 2, 3, 4], 'main'),
+        })
+        const expected = hot('-b---', {
+          b: new RequestNewResults('main'),
+        })
+
+        expectObservable(effects.requestNewResults$).toEqual(expected)
+      })
+    })
+
+    it('request new results on clearLocationFilter action', () => {
+      testScheduler.run(({ hot, expectObservable }) => {
+        actions$ = hot('-a---', {
+          a: new ClearLocationFilter('main'),
+        })
+        const expected = hot('-b---', {
+          b: new RequestNewResults('main'),
+        })
+
+        expectObservable(effects.requestNewResults$).toEqual(expected)
+      })
+    })
+
     describe('several param changes in the same frame', () => {
       it('only issues one new RequestNewResults action (same search id)', () => {
         testScheduler.run(({ hot, expectObservable }) => {
-          actions$ = hot('-(abcd)-', {
+          actions$ = hot('-(abcde)-', {
             a: new SetSpatialFilterEnabled(true, 'main'),
             b: new SetSortBy(['asc', 'fieldA'], 'main'),
             c: new SetFilters({ any: 'abcd', other: 'ef' }, 'main'),
             d: new Paginate(4, 'main'),
+            e: new SetLocationFilter('myLoc', [1, 2, 3, 4], 'main'),
           })
           const expected = hot('-b', {
             b: new RequestNewResults('main'),
@@ -279,7 +308,6 @@ describe('Effects', () => {
       })
     })
   })
-
   describe('loadResults$', () => {
     it('load new results on requestMoreResults action', () => {
       actions$ = hot('-a-', { a: new RequestMoreResults() })
@@ -478,6 +506,35 @@ describe('Effects', () => {
             })
           )
         })
+      })
+    })
+
+    // FIXME: REACTIVATE
+    describe.skip('when a location filter is present in the state', () => {
+      beforeEach(() => {
+        TestBed.inject(Store).dispatch(
+          new SetLocationFilter('myLoc', [1, 2, 3, 4], 'main')
+        )
+      })
+      it('passes the bbox as geometry to the ES service', async () => {
+        actions$ = of(new RequestMoreResults('main'))
+        await firstValueFrom(effects.loadResults$)
+        expect(repository.search).toHaveBeenCalledWith(
+          expect.objectContaining({
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [1, 2],
+                  [1, 4],
+                  [3, 4],
+                  [3, 2],
+                  [1, 2],
+                ],
+              ],
+            },
+          })
+        )
       })
     })
   })

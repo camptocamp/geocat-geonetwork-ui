@@ -3,10 +3,12 @@ import { Inject, Injectable } from '@angular/core'
 import { ActivatedRouteSnapshot, Router } from '@angular/router'
 import { MdViewActions } from '@geonetwork-ui/feature/record'
 import {
+  ClearLocationFilter,
   FieldsService,
   Paginate,
   SearchActions,
   SetFilters,
+  SetLocationFilter,
   SetSortBy,
 } from '@geonetwork-ui/feature/search'
 import { FieldFilters, SortByEnum } from '@geonetwork-ui/common/domain/search'
@@ -63,6 +65,12 @@ export class RouterEffects {
           ROUTE_PARAMS.PAGE in newParams
             ? parseInt(newParams[ROUTE_PARAMS.PAGE])
             : 1
+        let location =
+          ROUTE_PARAMS.LOCATION in newParams
+            ? newParams[ROUTE_PARAMS.LOCATION]
+            : ''
+        let bbox =
+          ROUTE_PARAMS.BBOX in newParams ? newParams[ROUTE_PARAMS.BBOX] : ''
         if (oldParams !== null) {
           const oldSort =
             ROUTE_PARAMS.SORT in oldParams
@@ -78,14 +86,36 @@ export class RouterEffects {
           if (pageNumber === oldPage) {
             pageNumber = null
           }
+          const oldLocation =
+            ROUTE_PARAMS.LOCATION in oldParams
+              ? oldParams[ROUTE_PARAMS.LOCATION]
+              : ''
+          const oldBbox =
+            ROUTE_PARAMS.BBOX in oldParams ? oldParams[ROUTE_PARAMS.BBOX] : ''
+          if (location === oldLocation && bbox === oldBbox) {
+            location = null
+            bbox = null
+          }
         }
         const filters =
           JSON.stringify(oldFilters) === JSON.stringify(newFilters)
             ? null
             : newFilters
-        return [sortBy, pageNumber, filters] as const
+        return [sortBy, pageNumber, filters, location, bbox] as const
       }),
-      mergeMap(([sortBy, pageNumber, filters]) => {
+      mergeMap(([sortBy, pageNumber, filters, location, bbox]) => {
+        const locationFilterAction = () => {
+          if (location !== '' && bbox !== '') {
+            return new SetLocationFilter(
+              location,
+              bbox.split(',').map(Number) as [number, number, number, number],
+              this.routerConfig.searchStateId
+            )
+          } else {
+            return new ClearLocationFilter(this.routerConfig.searchStateId)
+          }
+        }
+
         const actions: SearchActions[] = []
         if (filters !== null) {
           actions.push(new SetFilters(filters, this.routerConfig.searchStateId))
@@ -97,6 +127,9 @@ export class RouterEffects {
           actions.push(
             new Paginate(pageNumber, this.routerConfig.searchStateId)
           )
+        }
+        if (location !== null) {
+          actions.push(locationFilterAction())
         }
         return of(...actions)
       })

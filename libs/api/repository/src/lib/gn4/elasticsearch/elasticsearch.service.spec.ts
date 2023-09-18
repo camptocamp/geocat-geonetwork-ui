@@ -298,7 +298,26 @@ describe('ElasticsearchService', () => {
         )
         expect(query).toEqual({
           bool: {
-            filter: [],
+            filter: [
+              {
+                geo_shape: {
+                  geom: {
+                    relation: 'intersects',
+                    shape: {
+                      coordinates: [
+                        [
+                          [3.017921158755172, 50.65759907920972],
+                          [3.017921158755172, 50.613483610573155],
+                          [3.1098886148436122, 50.613483610573155],
+                          [3.017921158755172, 50.65759907920972],
+                        ],
+                      ],
+                      type: 'Polygon',
+                    },
+                  },
+                },
+              },
+            ],
             must: [
               {
                 terms: {
@@ -338,15 +357,6 @@ describe('ElasticsearchService', () => {
                     relation: 'within',
                   },
                   boost: 10.0,
-                },
-              },
-              {
-                geo_shape: {
-                  geom: {
-                    shape: geojsonPolygon,
-                    relation: 'intersects',
-                  },
-                  boost: 7.0,
                 },
               },
             ],

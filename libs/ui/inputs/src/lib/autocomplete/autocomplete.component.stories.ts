@@ -1,14 +1,21 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  Meta,
+  applicationConfig,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 import { AutocompleteComponent } from './autocomplete.component'
 import { of, throwError } from 'rxjs'
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatIconModule } from '@angular/material/icon'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule } from '@ngx-translate/core'
+import { importProvidersFrom } from '@angular/core'
 import {
   TRANSLATE_DEFAULT_CONFIG,
   UtilI18nModule,
 } from '@geonetwork-ui/util/i18n'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 export default {
   title: 'Inputs/AutocompleteComponent',
@@ -23,6 +30,9 @@ export default {
         ReactiveFormsModule,
       ],
     }),
+    applicationConfig({
+      providers: [importProvidersFrom(BrowserAnimationsModule)],
+    }),
   ],
 } as Meta<AutocompleteComponent>
 
@@ -36,6 +46,7 @@ export const Primary: StoryObj<AutocompleteComponentWithActionResult> = {
     placeholder: 'Full text search',
     actionResult: ['Hello', 'world'],
     actionThrowsError: false,
+    icon: 'pin_drop',
   },
   argTypes: {
     itemSelected: {
@@ -46,6 +57,12 @@ export const Primary: StoryObj<AutocompleteComponentWithActionResult> = {
     },
     actionThrowsError: {
       type: 'boolean',
+    },
+    icon: {
+      control: {
+        type: 'select',
+        options: ['pin_drop', 'search', 'home'],
+      },
     },
   },
   render: (args) => ({
