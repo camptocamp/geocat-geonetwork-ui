@@ -2,11 +2,11 @@ name: Artifacts
 run-name: 📦 Generate artifacts for ${{ github.event_name == 'issue_comment' && 'PR' || (github.event_name == 'release' && '🏷' || '🌱') }} ${{github.event_name == 'issue_comment' && github.event.issue.number || github.ref_name}}
 
 # This workflow runs whenever the "build affected docker images" checkbox is checked (for PR)
-# and also whenever a commit is pushed on 2.7.x or a tag is pushed
+# and also whenever a commit is pushed on main or a tag is pushed
 on:
   push:
     branches:
-      - 2.7.x
+      - geocat
   release:
     types: [published]
   issue_comment:
@@ -57,7 +57,10 @@ jobs:
           cache: 'npm'
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
+        uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: 'geocat'
+          fallback-sha: b5fac1a33b5c4df0f5db183ae09e956f3a327f51
 
       - name: Install dependencies
         run: npm ci
@@ -91,24 +94,28 @@ jobs:
         working-directory: tools
         run: npm run pipelines:docker-build
 
-      - name: Tag all docker images on 2.7.x also as 2.7.x
-        if: github.event_name == 'push' # only happens when pushing on the 2.7.x branch
-        run: docker image ls --format 'docker tag {{.Repository}}:{{.Tag}} {{.Repository}}:2.7.x' --filter=reference='geonetwork/*' | bash -
+      - name: Tag all docker images on main also as latest
+        if: github.event_name == 'push' # only happens when pushing on the main branch
+        run: docker image ls --format 'docker tag {{.Repository}}:{{.Tag}} {{.Repository}}:latest' --filter=reference='camptocamp/*' | bash -
 
-      - name: Login to DockerHub
+      - name: Login to Github Packages
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push all docker images
         # list all docker images, keep only the ones in the geonetwork org, and call docker push for each of them
         run: |
-          docker image ls --format '{{.Repository}}:{{.Tag}}' --filter=reference='geonetwork/*' | \
+          docker image ls --format '{{.Repository}}:{{.Tag}}' --filter=reference='camptocamp/*' | \
+          xargs -I '{}' docker tag '{}' ghcr.io/'{}'
+          docker image ls --format '{{.Repository}}:{{.Tag}}' |grep ghcr.io | \
           xargs -r -L1 docker push $1
 
   build-npm-package:
-    if: github.event_name != 'issue_comment'
+    # if: github.event_name != 'issue_comment'
+    if: false # disabled for geocat
     name: Build and publish NPM package
     runs-on: ubuntu-latest
 
@@ -138,9 +145,16 @@ jobs:
         working-directory: package
         run: node generate-package.js
 
-      - name: Publish NPM package with @dev-2.7.x tag
+      - name: Publish NPM package with @dev tag
         if: github.event_name != 'release'
         working-directory: package/dist
-        run: npm publish --tag dev-2.7.x
+        run: npm publish --tag dev
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish NPM package
+        if: github.event_name == 'release'
+        working-directory: package/dist
+        run: npm publish --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
