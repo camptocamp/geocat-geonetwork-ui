@@ -74,6 +74,6 @@
   },
   "parallel": 1,
   "useInferencePlugins": false,
-  "defaultBase": "remotes/origin/main",
+  "defaultBase": "remotes/geocat/geocat",
   "useLegacyCache": true
 }
