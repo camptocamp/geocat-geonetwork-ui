@@ -80,6 +80,7 @@ export class AutocompleteComponent
   @Input() clearOnSelection = false
   @Input() preventCompleteOnSelection = false
   @Input() autoFocus = false
+  @Input() icon = 'iconoirSearch'
   @Input() minCharacterCount? = 3
   // this will show a submit button next to the input; if false, a search icon will appear on the left
   @Input() allowSubmit = false

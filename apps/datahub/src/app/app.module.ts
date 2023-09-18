@@ -13,8 +13,8 @@ import {
   EXTERNAL_VIEWER_URL_TEMPLATE,
   FeatureRecordModule,
   GN_UI_VERSION,
-  WEB_COMPONENT_EMBEDDER_URL,
   RecordMetaComponent,
+  WEB_COMPONENT_EMBEDDER_URL,
 } from '@geonetwork-ui/feature/record'
 import {
   DefaultRouterModule,
@@ -27,6 +27,7 @@ import {
 import {
   FeatureSearchModule,
   FILTER_GEOMETRY,
+  LocationSearchComponent,
   RECORD_URL_TOKEN,
 } from '@geonetwork-ui/feature/search'
 import {
@@ -102,6 +103,7 @@ import {
   matStarOutline,
 } from '@ng-icons/material-icons/outline'
 import { NgIconsModule, provideNgIconsConfig } from '@ng-icons/core'
+import { ORGANIZATIONS_STRATEGY } from '@geonetwork-ui/api/repository/gn4'
 
 export const metaReducers: MetaReducer[] = !environment.production ? [] : []
 
@@ -173,6 +175,7 @@ export const metaReducers: MetaReducer[] = !environment.production ? [] : []
     }),
     OrganisationsComponent,
     LanguageSwitcherComponent,
+    LocationSearchComponent,
   ],
   providers: [
     provideNgIconsConfig({
@@ -236,6 +239,10 @@ export const metaReducers: MetaReducer[] = !environment.production ? [] : []
     {
       provide: ORGANIZATION_URL_TOKEN,
       useValue: `${ROUTER_ROUTE_SEARCH}?${ROUTE_PARAMS.PUBLISHER}=\${name}`,
+    },
+    {
+      provide: ORGANIZATIONS_STRATEGY,
+      useValue: 'groups',
     },
     {
       provide: DO_NOT_USE_DEFAULT_BASEMAP,

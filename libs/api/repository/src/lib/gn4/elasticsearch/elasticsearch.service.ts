@@ -302,7 +302,6 @@ export class ElasticsearchService {
       string,
       unknown
     >[]
-
     if (any) {
       must.push({
         query_string: {
@@ -324,26 +323,24 @@ export class ElasticsearchService {
       })
     }
     if (geometry) {
-      should.push(
-        {
-          geo_shape: {
-            geom: {
-              shape: geometry,
-              relation: 'within',
-            },
-            boost: 10.0,
+      // geocat specific: exclude records outside of geometry
+      should.push({
+        geo_shape: {
+          geom: {
+            shape: geometry,
+            relation: 'within',
+          },
+          boost: 10.0,
+        },
+      })
+      filter.push({
+        geo_shape: {
+          geom: {
+            shape: geometry,
+            relation: 'intersects',
           },
         },
-        {
-          geo_shape: {
-            geom: {
-              shape: geometry,
-              relation: 'intersects',
-            },
-            boost: 7.0,
-          },
-        }
-      )
+      })
     }
 
     return {

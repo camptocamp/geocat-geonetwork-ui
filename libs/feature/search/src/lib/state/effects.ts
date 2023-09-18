@@ -12,6 +12,7 @@ import {
 } from 'rxjs/operators'
 import {
   AddResults,
+  CLEAR_LOCATION_FILTER,
   ClearError,
   ClearResults,
   Paginate,
@@ -27,6 +28,7 @@ import {
   SET_FILTERS,
   SET_INCLUDE_ON_AGGREGATION,
   SET_PAGE_SIZE,
+  SET_LOCATION_FILTER,
   SET_SEARCH,
   SET_SORT_BY,
   SET_SPATIAL_FILTER_ENABLED,
@@ -46,6 +48,25 @@ import { RecordsRepositoryInterface } from '@geonetwork-ui/common/domain/reposit
 import { FavoritesService } from '@geonetwork-ui/api/repository'
 import { PlatformServiceInterface } from '@geonetwork-ui/common/domain/platform.service.interface'
 import { valid as validGeoJson } from 'geojson-validation'
+
+// specific geocat
+function getGeojsonFromBbox(bbox: [number, number, number, number]): Geometry {
+  // making sure there's a minimum delta between the bbox edges
+  const deltaX = Math.abs(bbox[0] - bbox[2]) < 0.001 ? 0.001 : 0
+  const deltaY = Math.abs(bbox[1] - bbox[3]) < 0.001 ? 0.001 : 0
+  return {
+    type: 'Polygon',
+    coordinates: [
+      [
+        [bbox[0], bbox[1]],
+        [bbox[0], bbox[3] + deltaY],
+        [bbox[2] + deltaX, bbox[3] + deltaY],
+        [bbox[2] + deltaX, bbox[1]],
+        [bbox[0], bbox[1]],
+      ],
+    ],
+  }
+}
 
 @Injectable()
 export class SearchEffects {
@@ -71,7 +92,9 @@ export class SearchEffects {
         UPDATE_FILTERS,
         SET_SEARCH,
         SET_FAVORITES_ONLY,
-        SET_SPATIAL_FILTER_ENABLED
+        SET_SPATIAL_FILTER_ENABLED,
+        SET_LOCATION_FILTER,
+        CLEAR_LOCATION_FILTER
       ),
       map((action: SearchActions) => new Paginate(1, action.id))
     )
@@ -86,7 +109,9 @@ export class SearchEffects {
       SET_FAVORITES_ONLY,
       SET_SPATIAL_FILTER_ENABLED,
       PAGINATE,
-      SET_PAGE_SIZE
+      SET_PAGE_SIZE,
+      SET_LOCATION_FILTER,
+      CLEAR_LOCATION_FILTER
     )
   )
 
@@ -161,6 +186,7 @@ export class SearchEffects {
                 ...state.config.filters,
                 ...state.params.filters,
               }
+              // TODO: use state.params.locationBbox as well!!
               const results$ = this.recordsRepository.search({
                 filters,
                 offset: currentPage * pageSize,
@@ -171,7 +197,9 @@ export class SearchEffects {
                   state.params.favoritesOnly && favorites
                     ? favorites
                     : undefined,
-                filterGeometry: geometry ?? undefined,
+                filterGeometry: state.params.locationBbox
+                  ? getGeojsonFromBbox(state.params.locationBbox)
+                  : geometry,
               })
               const aggregations$ = this.recordsRepository.aggregate(
                 state.config.aggregations

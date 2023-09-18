@@ -69,11 +69,23 @@ export class FuzzySearchComponent implements OnInit {
   }
 
   handleInputSubmission(any: string) {
-    if (this.inputSubmitted.observers.length > 0) {
-      this.inputSubmitted.emit(any)
-    } else {
-      this.searchService.updateFilters({ any })
+    // specific geocat: always emit on inputSubmitted
+    // if (this.inputSubmitted.observers.length > 0) {
+    this.inputSubmitted.emit(any)
+    // } else {
+    this.searchService.updateFilters({ any })
+    // }
+  }
+
+  // specific geocat
+  trigger() {
+    const inputValue = this.autocomplete.control.value
+    if (typeof inputValue !== 'string') {
+      return
     }
+    this.searchService.updateFilters({
+      any: inputValue,
+    })
   }
 
   async handleInputCleared() {
