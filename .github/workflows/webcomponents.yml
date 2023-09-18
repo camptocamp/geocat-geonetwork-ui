@@ -5,9 +5,7 @@ run-name: 🧩 Build Web Components for ${{ github.event_name == 'issue_comment'
 on:
   push:
     branches:
-      - main
-    tags:
-      - 'v*.*.*'
+      - geocat
   release:
     types: [published]
 
@@ -56,10 +54,10 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: Publish web component to ${{ env.PUBLISH_BRANCH }}-${{ github.ref_name }} branch
+      - name: Publish web component to ${{ env.PUBLISH_BRANCH }} branch
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           force_orphan: true
           publish_dir: ./wc-dist
-          publish_branch: ${{ env.PUBLISH_BRANCH }}-${{ github.ref_name }}
+          publish_branch: ${{ env.PUBLISH_BRANCH }}
