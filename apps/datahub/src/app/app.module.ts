@@ -37,6 +37,7 @@ import {
   RECORD_DATASET_URL_TOKEN,
   RECORD_REUSE_URL_TOKEN,
   RECORD_SERVICE_URL_TOKEN,
+  LocationSearchComponent,
 } from '@geonetwork-ui/feature/search'
 import { LANGUAGES_LIST } from '@geonetwork-ui/ui/catalog'
 import { THUMBNAIL_PLACEHOLDER } from '@geonetwork-ui/ui/elements'
@@ -73,6 +74,7 @@ import {
 } from './record/record-data-preview/record-data-preview.component'
 import { RecordPageComponent } from './record/record-page/record-page.component'
 import { DatahubRouterService } from './router/datahub-router.service'
+import { ORGANIZATIONS_STRATEGY } from '@geonetwork-ui/api/repository/gn4'
 
 export const metaReducers: MetaReducer[] = !environment.production ? [] : []
 
@@ -107,6 +109,7 @@ export const metaReducers: MetaReducer[] = !environment.production ? [] : []
       organizationRouteComponent: OrganizationPageComponent,
     }),
     SearchRouterContainerDirective,
+    LocationSearchComponent,
   ],
   providers: [
     { provide: RouterService, useClass: DatahubRouterService },
@@ -182,6 +185,10 @@ export const metaReducers: MetaReducer[] = !environment.production ? [] : []
     {
       provide: ORGANIZATION_URL_TOKEN,
       useValue: `${ROUTER_ROUTE_SEARCH}?${ROUTE_PARAMS.PUBLISHER}=\${name}`,
+    },
+    {
+      provide: ORGANIZATIONS_STRATEGY,
+      useValue: 'groups',
     },
     {
       provide: DO_NOT_USE_DEFAULT_BASEMAP,

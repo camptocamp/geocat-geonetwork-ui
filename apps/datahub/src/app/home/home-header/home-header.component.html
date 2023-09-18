@@ -24,19 +24,27 @@
         [style.opacity]="expandRatio"
         [innerHTML]="'datahub.header.title.html' | translate"
       ></div>
-      <gn-ui-fuzzy-search
-        class="text-[18px] pointer-events-auto"
-        style="
-          --gn-ui-text-input-padding: 1.1em;
-          --gn-ui-text-input-border-size: 0px;
-        "
-        (itemSelected)="onFuzzySearchSelection($event)"
-        [autoFocus]="true"
-      ></gn-ui-fuzzy-search>
-      <div
-        class="flex flex-wrap h-0 py-5 gap-3"
-        [style.opacity]="-0.6 + expandRatio * 2"
-      >
+      <div class="flex flex-wrap gap-4">
+        <gn-ui-fuzzy-search
+          class="text-[18px] grow pointer-events-auto"
+          style="
+            --gn-ui-text-input-padding: 1.1em;
+            --gn-ui-text-input-border-size: 0px;
+          "
+          (itemSelected)="onFuzzySearchSelection($event)"
+          (inputSubmitted)="updateLocationFilter()"
+          [autoFocus]="true"
+        ></gn-ui-fuzzy-search>
+        <gn-ui-location-search
+          class="text-[18px] grow"
+          style="
+            --gn-ui-text-input-padding: 1.1em;
+            --gn-ui-text-input-border-size: 0px;
+          "
+          (inputSubmitted)="updateTextFilter()"
+        ></gn-ui-location-search>
+      </div>
+      <div class="flex h-0 py-5 gap-3" [style.opacity]="-0.6 + expandRatio * 2">
         <datahub-header-badge-button
           [routerLink]="ROUTE_SEARCH"
           *ngIf="showFavoritesButton$ | async"

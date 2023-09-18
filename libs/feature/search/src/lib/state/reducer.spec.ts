@@ -480,4 +480,31 @@ describe('Search Reducer', () => {
       expect(state.params.useSpatialFilter).toEqual(false)
     })
   })
+
+  describe('SetLocationFilter action', () => {
+    it('should set the location filter', () => {
+      const action = new fromActions.SetLocationFilter('myLoc', [1, 2, 3, 4])
+      const state = reducerSearch(initialStateSearch, action)
+      expect(state.params.locationLabel).toEqual('myLoc')
+      expect(state.params.locationBbox).toEqual([1, 2, 3, 4])
+    })
+  })
+  describe('ClearLocationFilter action', () => {
+    it('should clear the location filter', () => {
+      const action = new fromActions.ClearLocationFilter()
+      const state = reducerSearch(
+        {
+          ...initialStateSearch,
+          params: {
+            ...initialStateSearch.params,
+            locationLabel: 'myLoc',
+            locationBbox: [1, 2, 3, 4],
+          },
+        },
+        action
+      )
+      expect(state.params.locationLabel).toBeUndefined()
+      expect(state.params.locationBbox).toBeUndefined()
+    })
+  })
 })

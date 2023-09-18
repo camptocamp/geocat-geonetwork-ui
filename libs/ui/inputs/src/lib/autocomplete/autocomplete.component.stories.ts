@@ -74,6 +74,7 @@ export const NoSubmit: StoryObj<AutocompleteComponentWithActionResult> = {
     placeholder: 'This will only show suggestions, there is no submit button',
     minCharacterCount: 3,
     actionThrowsError: false,
+    icon: 'matPinDropOutline',
     clearOnSelection: false,
     allowSubmit: false,
     enterButton: false,
@@ -87,6 +88,12 @@ export const NoSubmit: StoryObj<AutocompleteComponentWithActionResult> = {
     },
     actionThrowsError: {
       type: 'boolean',
+    },
+    icon: {
+      control: {
+        type: 'select',
+        options: ['matPinDropOutline', 'matSearchOutline', 'matHomeOutline'],
+      },
     },
   },
   render: (args) => ({

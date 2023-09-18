@@ -23,3 +23,7 @@ export * from './lib/state/container/search-state.container.directive'
 export * from './lib/results-table/results-table-container.component'
 export * from './lib/search-filters-summary/search-filters-summary.component'
 export * from './lib/search-filters-summary-item/search-filters-summary-item.component'
+
+// specific geocat
+export * from './lib/location-search/location-search-result.model'
+export * from './lib/location-search/location-search.component'
