@@ -71,6 +71,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { GN_UI_VERSION } from '@geonetwork-ui/feature/record'
 import { LOGIN_URL } from '@geonetwork-ui/api/repository/gn4'
 import { ORGANIZATIONS_STRATEGY } from '@geonetwork-ui/api/repository/gn4'
+import { GeocatHeaderComponent } from './home/geocat-header/geocat-header.component'
 
 export const metaReducers: MetaReducer[] = !environment.production ? [] : []
 // https://github.com/nrwl/nx/issues/191
@@ -90,6 +91,7 @@ export const metaReducers: MetaReducer[] = !environment.production ? [] : []
     LastCreatedComponent,
     KeyFiguresComponent,
     NavigationMenuComponent,
+    GeocatHeaderComponent,
   ],
   imports: [
     BrowserModule,
