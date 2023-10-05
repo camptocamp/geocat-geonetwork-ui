@@ -81,6 +81,7 @@ import { RecordDownloadsComponent } from './record/record-downloads/record-downl
 import { RecordApisComponent } from './record/record-apis/record-apis.component'
 import { MatTabsModule } from '@angular/material/tabs'
 import { ORGANIZATIONS_STRATEGY } from '@geonetwork-ui/api/repository/gn4'
+import { GeocatHeaderComponent } from './home/geocat-header/geocat-header.component'
 
 export const metaReducers: MetaReducer[] = !environment.production ? [] : []
 // https://github.com/nrwl/nx/issues/191
@@ -105,6 +106,7 @@ export const metaReducers: MetaReducer[] = !environment.production ? [] : []
     RecordOtherlinksComponent,
     RecordDownloadsComponent,
     RecordApisComponent,
+    GeocatHeaderComponent,
   ],
   imports: [
     BrowserModule,

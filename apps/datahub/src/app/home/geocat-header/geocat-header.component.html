@@ -1,0 +1,16 @@
+<div class="px-5">
+  <div
+    class="mx-auto flex items-center justify-center sm:justify-end gap-2 py-1 text-sm"
+  >
+    <a class="block hover:underline mr-4" [href]="docLink" target="_blank">{{
+      'datahub.header.documentation' | translate
+    }}</a>
+    <a class="block hover:underline" [href]="gnLink" target="_blank">{{
+      'datahub.header.admin' | translate
+    }}</a>
+    <gn-ui-language-switcher
+      *ngIf="showLanguageSwitcher"
+      class="language-switcher"
+    ></gn-ui-language-switcher>
+  </div>
+</div>
