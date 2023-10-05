@@ -75,6 +75,7 @@ import {
 import { RecordPageComponent } from './record/record-page/record-page.component'
 import { DatahubRouterService } from './router/datahub-router.service'
 import { ORGANIZATIONS_STRATEGY } from '@geonetwork-ui/api/repository/gn4'
+import { GeocatHeaderComponent } from './home/geocat-header/geocat-header.component'
 
 export const metaReducers: MetaReducer[] = !environment.production ? [] : []
 
@@ -110,6 +111,7 @@ export const metaReducers: MetaReducer[] = !environment.production ? [] : []
     }),
     SearchRouterContainerDirective,
     LocationSearchComponent,
+    GeocatHeaderComponent,
   ],
   providers: [
     { provide: RouterService, useClass: DatahubRouterService },

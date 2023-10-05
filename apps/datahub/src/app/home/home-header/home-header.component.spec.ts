@@ -263,7 +263,8 @@ describe('HomeHeaderComponent', () => {
         })
       })
 
-      describe('language switcher', () => {
+      // skipped for geocat
+      describe.skip('language switcher', () => {
         describe('given predefined languages', () => {
           it('should display language switcher', () => {
             const languageSwitcher = fixture.debugElement.queryAll(
