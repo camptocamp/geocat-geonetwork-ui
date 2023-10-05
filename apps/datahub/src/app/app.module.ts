@@ -104,6 +104,7 @@ import {
 } from '@ng-icons/material-icons/outline'
 import { NgIconsModule, provideNgIconsConfig } from '@ng-icons/core'
 import { ORGANIZATIONS_STRATEGY } from '@geonetwork-ui/api/repository/gn4'
+import { GeocatHeaderComponent } from './home/geocat-header/geocat-header.component'
 
 export const metaReducers: MetaReducer[] = !environment.production ? [] : []
 
@@ -176,6 +177,7 @@ export const metaReducers: MetaReducer[] = !environment.production ? [] : []
     OrganisationsComponent,
     LanguageSwitcherComponent,
     LocationSearchComponent,
+    GeocatHeaderComponent,
   ],
   providers: [
     provideNgIconsConfig({

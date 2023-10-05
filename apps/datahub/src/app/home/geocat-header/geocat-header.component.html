@@ -1,0 +1,17 @@
+<div
+  class="px-5 mx-auto flex items-center justify-center sm:justify-end gap-6 py-1 text-sm"
+>
+  <a class="block hover:underline" [href]="gnLinkGeneral" target="_blank">{{
+    'datahub.header.geonetwork' | translate
+  }}</a>
+  <a class="block hover:underline" [href]="docLink" target="_blank">{{
+    'datahub.header.documentation' | translate
+  }}</a>
+  <a class="block hover:underline" [href]="gnLinkAdmin" target="_blank">{{
+    'datahub.header.admin' | translate
+  }}</a>
+  <gn-ui-language-switcher
+    *ngIf="showLanguageSwitcher"
+    class="language-switcher"
+  ></gn-ui-language-switcher>
+</div>
