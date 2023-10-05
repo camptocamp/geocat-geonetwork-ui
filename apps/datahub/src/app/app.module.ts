@@ -108,6 +108,7 @@ import { NgIconsModule, provideNgIconsConfig } from '@ng-icons/core'
 import { MAX_FEATURE_COUNT } from './record/record-data-preview/record-data-preview.component'
 import { MatButtonToggleModule } from '@angular/material/button-toggle'
 import { ORGANIZATIONS_STRATEGY } from '@geonetwork-ui/api/repository/gn4'
+import { GeocatHeaderComponent } from './home/geocat-header/geocat-header.component'
 
 export const metaReducers: MetaReducer[] = !environment.production ? [] : []
 
@@ -183,6 +184,7 @@ export const metaReducers: MetaReducer[] = !environment.production ? [] : []
     LanguageSwitcherComponent,
     MatButtonToggleModule,
     LocationSearchComponent,
+    GeocatHeaderComponent,
   ],
   providers: [
     provideNgIconsConfig({
