@@ -9,7 +9,7 @@ import {
   ROUTER_ROUTE_NEWS,
   ROUTER_ROUTE_ORGANISATIONS,
 } from '../../router/constants'
-import { getThemeConfig } from '@geonetwork-ui/util/app-config'
+// import { getThemeConfig } from '@geonetwork-ui/util/app-config'
 
 marker('datahub.header.news')
 marker('datahub.header.datasets')
@@ -21,7 +21,7 @@ marker('datahub.header.organisations')
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavigationMenuComponent {
-  foregroundColor = getThemeConfig().HEADER_FOREGROUND_COLOR || '#ffffff'
+  foregroundColor = /*getThemeConfig().HEADER_FOREGROUND_COLOR ||*/ '#ffffff'
   displayMobileMenu = false
   tabLinks = [
     {
