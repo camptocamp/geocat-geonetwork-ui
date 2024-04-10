@@ -40,7 +40,7 @@
     "@biesbjerg/ngx-translate-extract-marker": "^1.0.0",
     "@camptocamp/ogc-client": "^0.4.0",
     "@geospatial-sdk/geocoding": "^0.0.5-alpha.2",
-    "@ltd/j-toml": "~1.35.2",
+    "@ltd/j-toml": "~1.38.0",
     "@messageformat/core": "^3.0.1",
     "@nx/angular": "16.6.0",
     "@rgrove/parse-xml": "~4.0.1",
