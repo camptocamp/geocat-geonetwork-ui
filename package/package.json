@@ -42,7 +42,7 @@
     "@geospatial-sdk/geocoding": "^0.0.5-alpha.2",
     "@ltd/j-toml": "~1.35.2",
     "@messageformat/core": "^3.0.1",
-    "@nx/angular": "16.6.0",
+    "@nx/angular": "16.10.0",
     "@rgrove/parse-xml": "~4.0.1",
     "alasql": "^3.1.0",
     "axios": "^1.6.0",
