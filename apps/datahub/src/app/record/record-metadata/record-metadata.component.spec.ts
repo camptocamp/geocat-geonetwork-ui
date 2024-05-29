@@ -116,9 +116,10 @@ describe('RecordMetadataComponent', () => {
       metadataContact = fixture.debugElement.query(
         By.directive(MetadataContactComponent)
       ).componentInstance
-      catalogComponent = fixture.debugElement.query(
-        By.directive(MetadataCatalogComponent)
-      ).componentInstance
+      // SPECIFIC GEOCAT
+      // catalogComponent = fixture.debugElement.query(
+      //   By.directive(MetadataCatalogComponent)
+      // ).componentInstance
     })
     describe('if metadata present', () => {
       it('shows the full metadata', () => {
@@ -126,12 +127,6 @@ describe('RecordMetadataComponent', () => {
       })
       it('shows the metadata contact', () => {
         expect(metadataContact.metadata).toHaveProperty('contacts')
-      })
-      it('shows the metadata catalog', () => {
-        expect(sourcesService.getSourceLabel).toBeCalledWith(
-          SAMPLE_RECORD.extras.catalogUuid
-        )
-        expect(catalogComponent.sourceLabel).toEqual('catalog label')
       })
     })
     describe('if metadata not present', () => {
