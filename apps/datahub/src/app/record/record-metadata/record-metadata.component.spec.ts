@@ -134,15 +134,6 @@ export class MockMetadataContactComponent {
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'gn-ui-metadata-catalog',
-  template: '<div></div>',
-})
-export class MockMetadataCatalogComponent {
-  @Input() sourceLabel: string
-}
-
-@Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'gn-ui-record-api-form',
   template: '<div></div>',
 })
@@ -179,7 +170,6 @@ describe('RecordMetadataComponent', () => {
         MockRelatedComponent,
         SearchResultsErrorComponent,
         MockMetadataInfoComponent,
-        MockMetadataCatalogComponent,
         MockMetadataContactComponent,
         MockRecordApiFormComponent,
         MockImgOverlayPreviewComponent,
@@ -227,7 +217,6 @@ describe('RecordMetadataComponent', () => {
   describe('about', () => {
     let metadataInfo: MockMetadataInfoComponent
     let metadataContact: MockMetadataContactComponent
-    let catalogComponent: MockMetadataCatalogComponent
 
     beforeEach(() => {
       facade.isPresent$.next(true)
@@ -238,9 +227,6 @@ describe('RecordMetadataComponent', () => {
       metadataContact = fixture.debugElement.query(
         By.directive(MockMetadataContactComponent)
       ).componentInstance
-      catalogComponent = fixture.debugElement.query(
-        By.directive(MockMetadataCatalogComponent)
-      ).componentInstance
     })
     describe('if metadata present', () => {
       it('shows the full metadata', () => {
@@ -248,12 +234,6 @@ describe('RecordMetadataComponent', () => {
       })
       it('shows the metadata contact', () => {
         expect(metadataContact.metadata).toHaveProperty('contacts')
-      })
-      it('shows the metadata catalog', () => {
-        expect(sourcesService.getSourceLabel).toBeCalledWith(
-          SAMPLE_RECORD.extras.catalogUuid
-        )
-        expect(catalogComponent.sourceLabel).toEqual('catalog label')
       })
     })
     describe('if metadata not present', () => {
@@ -271,11 +251,6 @@ describe('RecordMetadataComponent', () => {
       it('does not display the metadata contact component', () => {
         expect(
           fixture.debugElement.query(By.directive(MockMetadataContactComponent))
-        ).toBeFalsy()
-      })
-      it('does not display the metadata catalog component', () => {
-        expect(
-          fixture.debugElement.query(By.directive(MockMetadataCatalogComponent))
         ).toBeFalsy()
       })
       it('does not display the image overlay preview', () => {
