@@ -10,10 +10,7 @@ import { By } from '@angular/platform-browser'
 import { SourcesService } from '@geonetwork-ui/feature/catalog'
 import { MapManagerService } from '@geonetwork-ui/feature/map'
 import { SearchService } from '@geonetwork-ui/feature/search'
-import {
-  ErrorType,
-  SearchResultsErrorComponent,
-} from '@geonetwork-ui/ui/elements'
+import { ErrorComponent, ErrorType } from '@geonetwork-ui/ui/elements'
 import { TranslateModule } from '@ngx-translate/core'
 import { BehaviorSubject, of } from 'rxjs'
 import { RecordMetadataComponent } from './record-metadata.component'
@@ -168,7 +165,7 @@ describe('RecordMetadataComponent', () => {
         MockDataOtherlinksComponent,
         MockDataApisComponent,
         MockRelatedComponent,
-        SearchResultsErrorComponent,
+        ErrorComponent,
         MockMetadataInfoComponent,
         MockMetadataContactComponent,
         MockRecordApiFormComponent,
@@ -598,9 +595,9 @@ describe('RecordMetadataComponent', () => {
   describe('error handling', () => {
     describe('normal', () => {
       it('does not show errors', () => {
-        const result = fixture.debugElement.query(
-          By.directive(SearchResultsErrorComponent)
-        )
+        facade.otherLinks$.next([''])
+        fixture.detectChanges()
+        const result = fixture.debugElement.query(By.directive(ErrorComponent))
         expect(result).toBeFalsy()
       })
     })
@@ -610,9 +607,7 @@ describe('RecordMetadataComponent', () => {
         fixture.detectChanges()
       })
       it('shows error', () => {
-        const result = fixture.debugElement.query(
-          By.directive(SearchResultsErrorComponent)
-        )
+        const result = fixture.debugElement.query(By.directive(ErrorComponent))
 
         expect(result).toBeTruthy()
         expect(result.componentInstance.type).toBe(ErrorType.RECORD_NOT_FOUND)
@@ -628,13 +623,29 @@ describe('RecordMetadataComponent', () => {
         fixture.detectChanges()
       })
       it('shows error', () => {
-        const result = fixture.debugElement.query(
-          By.directive(SearchResultsErrorComponent)
-        )
+        const result = fixture.debugElement.query(By.directive(ErrorComponent))
 
         expect(result).toBeTruthy()
         expect(result.componentInstance.type).toBe(ErrorType.RECEIVED_ERROR)
         expect(result.componentInstance.error).toBe('This is an Error!')
+      })
+    })
+
+    describe('When there are no link (download, api or other links)', () => {
+      beforeEach(() => {
+        facade.apiLinks$.next([])
+        facade.downloadLinks$.next([])
+        facade.otherLinks$.next([])
+        fixture.detectChanges()
+      })
+      it('shows the no link error block', () => {
+        const result = fixture.debugElement.query(
+          By.css('[data-test="dataset-has-no-link-block"]')
+        )
+        expect(result).toBeTruthy()
+        expect(result.componentInstance.type).toBe(
+          ErrorType.DATASET_HAS_NO_LINK
+        )
       })
     })
   })

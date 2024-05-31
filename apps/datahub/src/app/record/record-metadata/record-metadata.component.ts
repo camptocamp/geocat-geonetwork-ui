@@ -49,6 +49,17 @@ export class RecordMetadataComponent {
     map((records) => records?.length > 0)
   )
 
+  displayDatasetHasNoLinkBlock$ = combineLatest([
+    this.displayDownload$,
+    this.displayApi$,
+    this.displayOtherLinks,
+  ]).pipe(
+    map(
+      ([displayDownload, displayApi, displayOtherLinks]) =>
+        !displayDownload && !displayApi && !displayOtherLinks
+    )
+  )
+
   sourceLabel$ = this.facade.metadata$.pipe(
     map((record) => record?.extras?.catalogUuid as string),
     filter((uuid) => !!uuid),

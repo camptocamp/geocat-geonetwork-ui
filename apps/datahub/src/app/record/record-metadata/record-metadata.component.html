@@ -130,7 +130,12 @@
       ></datahub-record-apis>
     </div>
   </div>
-
+  <ng-container *ngIf="displayDatasetHasNoLinkBlock$ | async">
+    <gn-ui-error
+      data-test="dataset-has-no-link-block"
+      [type]="errorTypes.DATASET_HAS_NO_LINK"
+    ></gn-ui-error>
+  </ng-container>
   <div id="related-records" *ngIf="displayRelated$ | async">
     <div>
       <div class="h-48 overflow-visible">
@@ -150,14 +155,14 @@
   class="mt-12 p-4 max-w-[600px] m-auto text-[13px]"
   *ngIf="facade.error$ | async as error"
 >
-  <gn-ui-search-results-error
+  <gn-ui-error
     *ngIf="error.notFound"
     [type]="errorTypes.RECORD_NOT_FOUND"
     [recordId]="(facade.metadata$ | async).uniqueIdentifier"
-  ></gn-ui-search-results-error>
-  <gn-ui-search-results-error
+  ></gn-ui-error>
+  <gn-ui-error
     *ngIf="error.otherError"
     [type]="errorTypes.RECEIVED_ERROR"
     [error]="error.otherError"
-  ></gn-ui-search-results-error>
+  ></gn-ui-error>
 </div>

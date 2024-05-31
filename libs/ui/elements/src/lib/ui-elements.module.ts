@@ -17,7 +17,7 @@ import { RelatedRecordCardComponent } from './related-record-card/related-record
 import { MetadataContactComponent } from './metadata-contact/metadata-contact.component'
 import { MetadataQualityComponent } from './metadata-quality/metadata-quality.component'
 import { MetadataQualityItemComponent } from './metadata-quality-item/metadata-quality-item.component'
-import { SearchResultsErrorComponent } from './search-results-error/search-results-error.component'
+import { ErrorComponent } from './error/error.component'
 import { PaginationComponent } from './pagination/pagination.component'
 import { ThumbnailComponent } from './thumbnail/thumbnail.component'
 import { UiInputsModule } from '@geonetwork-ui/ui/inputs'
@@ -57,7 +57,7 @@ import { ImageOverlayPreviewComponent } from './image-overlay-preview/image-over
     MetadataContactComponent,
     MetadataQualityComponent,
     MetadataQualityItemComponent,
-    SearchResultsErrorComponent,
+    ErrorComponent,
     PaginationComponent,
     ThumbnailComponent,
     AvatarComponent,
@@ -79,7 +79,7 @@ import { ImageOverlayPreviewComponent } from './image-overlay-preview/image-over
     MetadataContactComponent,
     MetadataQualityComponent,
     MetadataQualityItemComponent,
-    SearchResultsErrorComponent,
+    ErrorComponent,
     PaginationComponent,
     ThumbnailComponent,
     AvatarComponent,
