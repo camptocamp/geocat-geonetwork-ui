@@ -181,11 +181,12 @@ describe('ElasticsearchService', () => {
               },
             },
           ],
-          must_not: {
-            terms: {
-              resourceType: ['service', 'map', 'map/static', 'mapDigital'],
-            },
-          },
+          // SPECIFIC GEOCAT
+          // must_not: {
+          //   terms: {
+          //     resourceType: ['service', 'map', 'map/static', 'mapDigital'],
+          //   },
+          // },
         },
       })
     })
@@ -249,11 +250,12 @@ describe('ElasticsearchService', () => {
               },
             },
           ],
-          must_not: {
-            terms: {
-              resourceType: ['service', 'map', 'map/static', 'mapDigital'],
-            },
-          },
+          // SPECIFIC GEOCAT
+          // must_not: {
+          //   terms: {
+          //     resourceType: ['service', 'map', 'map/static', 'mapDigital'],
+          //   },
+          // },
         },
       })
     })
@@ -315,11 +317,12 @@ describe('ElasticsearchService', () => {
               },
             },
           ],
-          must_not: {
-            terms: {
-              resourceType: ['service', 'map', 'map/static', 'mapDigital'],
-            },
-          },
+          // SPECIFIC GEOCAT
+          // must_not: {
+          //   terms: {
+          //     resourceType: ['service', 'map', 'map/static', 'mapDigital'],
+          //   },
+          // },
         },
       })
     })
@@ -374,11 +377,12 @@ describe('ElasticsearchService', () => {
               },
             },
           ],
-          must_not: {
-            terms: {
-              resourceType: ['service', 'map', 'map/static', 'mapDigital'],
-            },
-          },
+          // SPECIFIC GEOCAT
+          // must_not: {
+          //   terms: {
+          //     resourceType: ['service', 'map', 'map/static', 'mapDigital'],
+          //   },
+          // },
         },
       })
     })
@@ -415,11 +419,12 @@ describe('ElasticsearchService', () => {
           ],
           should: [],
           must: [],
-          must_not: {
-            terms: {
-              resourceType: ['service', 'map', 'map/static', 'mapDigital'],
-            },
-          },
+          // SPECIFIC GEOCAT
+          // must_not: {
+          //   terms: {
+          //     resourceType: ['service', 'map', 'map/static', 'mapDigital'],
+          //   },
+          // },
         },
       })
     })
@@ -468,11 +473,12 @@ describe('ElasticsearchService', () => {
               },
             },
           ],
-          must_not: {
-            terms: {
-              resourceType: ['service', 'map', 'map/static', 'mapDigital'],
-            },
-          },
+          // SPECIFIC GEOCAT
+          // must_not: {
+          //   terms: {
+          //     resourceType: ['service', 'map', 'map/static', 'mapDigital'],
+          //   },
+          // },
         },
       })
     })
@@ -597,11 +603,12 @@ describe('ElasticsearchService', () => {
                 },
               },
             ],
-            must_not: {
-              terms: {
-                resourceType: ['service', 'map', 'map/static', 'mapDigital'],
-              },
-            },
+            // SPECIFIC GEOCAT
+            // must_not: {
+            //   terms: {
+            //     resourceType: ['service', 'map', 'map/static', 'mapDigital'],
+            //   },
+            // },
             should: [
               {
                 geo_shape: {
@@ -714,11 +721,12 @@ describe('ElasticsearchService', () => {
                   },
                 },
               ],
-              must_not: {
-                terms: {
-                  resourceType: ['service', 'map', 'map/static', 'mapDigital'],
-                },
-              },
+              // SPECIFIC GEOCAT
+              // must_not: {
+              //   terms: {
+              //     resourceType: ['service', 'map', 'map/static', 'mapDigital'],
+              //   },
+              // },
             },
           },
           from: 0,

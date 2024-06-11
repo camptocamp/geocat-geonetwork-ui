@@ -361,7 +361,6 @@ export class ElasticsearchService {
     return {
       bool: {
         must,
-        must_not,
         should,
         filter,
       },
@@ -410,14 +409,6 @@ export class ElasticsearchService {
               },
             },
           ],
-          must_not: {
-            ...this.queryFilterOnValues('resourceType', [
-              'service',
-              'map',
-              'map/static',
-              'mapDigital',
-            ]),
-          },
         },
       },
       _source: ['resourceTitleObject', 'uuid'],
