@@ -4,7 +4,14 @@ const { join } = require('path')
 
 module.exports = {
   ...baseConfig,
-  safelist: [...baseConfig.safelist, 'w-max', 'items-end', 'sm:h-36', 'h-20'],
+  safelist: [
+    ...baseConfig.safelist,
+    'w-max',
+    'items-end',
+    'sm:h-36',
+    'md:h-[10.5rem]',
+    'h-20',
+  ],
   theme: {
     ...baseConfig.theme,
     extend: {
