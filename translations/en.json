@@ -508,7 +508,7 @@
   "record.metadata.quality.updateFrequency.success": "Update frequency is specified",
   "record.metadata.related": "Explore the catalog",
   "record.metadata.ressources.and.links": "Resources and links",
-  "record.metadata.sheet": "Original metadata",
+  "record.metadata.sheet": "Detailed original metadata",
   "record.metadata.status": "Status",
   "record.metadata.status.notPublished": "Not published",
   "record.metadata.status.published": "Published",

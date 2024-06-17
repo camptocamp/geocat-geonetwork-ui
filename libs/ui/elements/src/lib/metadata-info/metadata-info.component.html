@@ -259,8 +259,10 @@
     <div *ngIf="metadata.landingPage">
       <p class="text-sm" translate>record.metadata.sheet</p>
       <p class="text-primary font-medium" translate>
-        <a [href]="metadata.landingPage" target="_blank">
-          <span class="break-all" gnUiLinkify>{{ metadata.landingPage }}</span>
+        <a [href]="metadataLandingPageAdvanced" target="_blank">
+          <span class="break-all" gnUiLinkify>{{
+            metadataLandingPageAdvanced
+          }}</span>
         </a>
       </p>
     </div>
