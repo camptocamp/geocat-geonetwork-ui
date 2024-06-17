@@ -256,7 +256,7 @@
   "record.metadata.quality.updateFrequency.failed": "Update frequency is not specified",
   "record.metadata.quality.updateFrequency.success": "Update frequency is specified",
   "record.metadata.related": "Related records",
-  "record.metadata.sheet": "Original metadata",
+  "record.metadata.sheet": "Detailed original metadata",
   "record.metadata.status": "Status",
   "record.metadata.technical": "Technical information",
   "record.metadata.temporalExtent": "Temporal extent",
