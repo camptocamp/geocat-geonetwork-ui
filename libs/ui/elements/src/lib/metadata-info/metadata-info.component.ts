@@ -134,6 +134,13 @@ export class MetadataInfoComponent {
     return this.metadata.contactsForResource?.[0]
   }
 
+  // geocat specific
+  get metadataLandingPageAdvanced() {
+    return (
+      this.metadata.landingPage + `/formatters/xsl-view?root=div&view=advanced`
+    )
+  }
+
   fieldReady(propName: string) {
     return !this.incomplete || propName in this.metadata
   }

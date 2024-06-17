@@ -497,7 +497,7 @@
   "record.metadata.quality.updateFrequency.failed": "Aktualisierungsfrequenz nicht angegeben",
   "record.metadata.quality.updateFrequency.success": "Aktualisierungsfrequenz angegeben",
   "record.metadata.related": "Ähnliche Datensätze",
-  "record.metadata.sheet": "Weitere Informationen verfügbar unter:",
+  "record.metadata.sheet": "Weitere detaillierte Informationen verfügbar unter:",
   "record.metadata.status": "Status",
   "record.metadata.status.notPublished": "",
   "record.metadata.status.published": "",
