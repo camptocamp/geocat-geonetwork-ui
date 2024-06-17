@@ -256,7 +256,7 @@
   "record.metadata.quality.updateFrequency.failed": "Fréquence de mise à jour n'est pas renseignée",
   "record.metadata.quality.updateFrequency.success": "Fréquence de mise à jour est renseignée",
   "record.metadata.related": "Voir aussi",
-  "record.metadata.sheet": "Fiche de métadonnées d'origine",
+  "record.metadata.sheet": "Fiche de métadonnées détaillée d'origine",
   "record.metadata.status": "Statut",
   "record.metadata.technical": "Informations techniques",
   "record.metadata.temporalExtent": "Etendue temporelle",
