@@ -18,9 +18,15 @@ export class GeocatHeaderComponent {
     }/home.html`
   }
 
-  get gnLink() {
+  get gnLinkAdmin() {
     return `/geonetwork/srv/${
       LANG_2_TO_3_MAPPER[this.translate.currentLang] || 'eng'
     }/catalog.edit#/board`
+  }
+
+  get gnLinkGeneral() {
+    return `/geonetwork/srv/${
+      LANG_2_TO_3_MAPPER[this.translate.currentLang] || 'eng'
+    }/catalog.search#/home`
   }
 }
