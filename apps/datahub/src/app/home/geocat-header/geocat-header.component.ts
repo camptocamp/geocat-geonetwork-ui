@@ -13,9 +13,7 @@ export class GeocatHeaderComponent {
   constructor(private translate: TranslateService) {}
 
   get docLink() {
-    return `https://www.geocat.admin.ch/${
-      this.translate.currentLang || 'en'
-    }/home.html`
+    return `https://www.info.geocat.ch`
   }
 
   get gnLinkAdmin() {
