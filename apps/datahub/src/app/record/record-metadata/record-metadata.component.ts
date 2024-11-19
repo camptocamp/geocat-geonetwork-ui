@@ -5,7 +5,6 @@ import {
   ErrorComponent,
   ErrorType,
   ImageOverlayPreviewComponent,
-  MetadataCatalogComponent,
   MetadataContactComponent,
   MetadataInfoComponent,
   MetadataQualityComponent,
@@ -31,6 +30,7 @@ import { RecordApisComponent } from '../record-apis/record-apis.component'
 import { RecordOtherlinksComponent } from '../record-otherlinks/record-otherlinks.component'
 import { RecordRelatedRecordsComponent } from '../record-related-records/record-related-records.component'
 import { TranslateModule } from '@ngx-translate/core'
+import { DomSanitizer } from '@angular/platform-browser'
 
 @Component({
   selector: 'datahub-record-metadata',
@@ -51,7 +51,6 @@ import { TranslateModule } from '@ngx-translate/core'
     MetadataInfoComponent,
     MetadataContactComponent,
     MetadataQualityComponent,
-    MetadataCatalogComponent,
     RecordRelatedRecordsComponent,
     DataViewComponent,
     MapViewComponent,
@@ -69,6 +68,21 @@ export class RecordMetadataComponent {
       return mapApiLinks?.length > 0 || geoDataLinksWithGeometry?.length > 0
     }),
     startWith(false)
+  )
+
+  geoAdminUrl$ = this.metadataViewFacade.otherLinks$.pipe(
+    map((mapApiLinks) => {
+      return mapApiLinks?.find((link) =>
+        link?.url.toString().startsWith('https://map.geo.admin.ch/')
+      )
+    }),
+    filter((geoAdminUrl) => !!geoAdminUrl),
+    map((link) =>
+      this.sanitizer.bypassSecurityTrustResourceUrl(
+        link.url.toString().replace('?layers=', '#/embed?layers=')
+      )
+    ),
+    startWith(null)
   )
 
   displayData$ = combineLatest([
@@ -149,6 +163,7 @@ export class RecordMetadataComponent {
     public metadataViewFacade: MdViewFacade,
     private searchService: SearchService,
     private sourceService: SourcesService,
+    private sanitizer: DomSanitizer,
     private orgsService: OrganizationsServiceInterface
   ) {}
 
