@@ -42,7 +42,7 @@
     </div>
 
     <div
-      class="top-[1em] p-3 bg-white absolute overflow-y-auto overflow-x-hidden max-h-72 w-56"
+      class="top-[60px] p-3 bg-white absolute overflow-y-auto overflow-x-hidden max-h-72 w-56"
       [ngClass]="{ 'right-[1em]': !selection, 'right-[16em]': selection }"
       [hidden]="!showLegend || !legendExists"
     >
@@ -71,7 +71,7 @@
       *ngIf="!showLegend && legendExists && !selection"
       type="outline"
       (buttonClick)="toggleLegend()"
-      extraClass="absolute top-[1em] right-[1em] rounded p-1 text-xs bg-white"
+      extraClass="absolute top-[60px] right-[1em] rounded p-1 text-xs bg-white"
     >
       Legend
     </gn-ui-button>

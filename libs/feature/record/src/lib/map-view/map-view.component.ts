@@ -193,9 +193,11 @@ export class MapViewComponent implements AfterViewInit {
     private changeRef: ChangeDetectorRef
   ) {}
 
-  async ngAfterViewInit() {
-    const map = await this.mapContainer.openlayersMap
-    prioritizePageScroll(map.getInteractions())
+  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
+  ngAfterViewInit() {
+    // SPECIFIC GEOCAT
+    // const map = await this.mapContainer.openlayersMap
+    // prioritizePageScroll(map.getInteractions())
   }
 
   onMapFeatureSelect(features: Feature[]): void {
