@@ -36,7 +36,6 @@ import {
 import {
   FeatureDetailComponent,
   MapContainerComponent,
-  prioritizePageScroll,
 } from '@geonetwork-ui/ui/map'
 import { Feature } from 'geojson'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
@@ -158,9 +157,11 @@ export class MapViewComponent implements AfterViewInit {
     private changeRef: ChangeDetectorRef
   ) {}
 
-  async ngAfterViewInit() {
-    const map = await this.mapContainer.openlayersMap
-    prioritizePageScroll(map.getInteractions())
+  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
+  ngAfterViewInit() {
+    // SPECIFIC GEOCAT
+    // const map = await this.mapContainer.openlayersMap
+    // prioritizePageScroll(map.getInteractions())
   }
 
   onMapFeatureSelect(features: Feature[]): void {

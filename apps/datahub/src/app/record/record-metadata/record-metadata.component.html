@@ -81,14 +81,7 @@
                 style="height: 500px"
                 *ngIf="displayMap$ | async"
               >
-                <gn-ui-map-view
-                  *ngIf="(geoAdminUrl$ | async) === null"
-                ></gn-ui-map-view>
-                <iframe
-                  class="w-full h-full"
-                  *ngIf="geoAdminUrl$ | async"
-                  [src]="geoAdminUrl$ | async"
-                ></iframe>
+                <gn-ui-map-view></gn-ui-map-view>
               </div>
             </mat-tab>
             <mat-tab [disabled]="(displayData$ | async) === false">
@@ -113,10 +106,7 @@
     </div>
   </div>
   <gn-ui-data-view-share
-    *ngIf="
-      (geoAdminUrl$ | async) === false &&
-      ((displayMap$ | async) || (displayData$ | async))
-    "
+    *ngIf="(displayMap$ | async) || (displayData$ | async)"
     [viewType]="selectedView$ | async"
   ></gn-ui-data-view-share>
   <div
