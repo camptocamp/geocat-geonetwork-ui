@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Geoadmin + Geocat integration demo</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script src="https://cdn.jsdelivr.net/gh/camptocamp/geocat-geonetwork-ui@wc-dist-geocat-gpf/gn-wc.js"></script>
+  </head>
+  <body>
+    <iframe
+      id="geoadmin-root"
+      src="https://map.geo.admin.ch/#embed?bgLayer=ch.swisstopo.pixelkarte-grau"
+    ></iframe>
+    <gn-search-input
+      api-url="https://www.geocat.ch/geonetwork/srv/api"
+      primary-color="#0f4395"
+      secondary-color="#8bc832"
+    ></gn-search-input>
+    <gn-results-list
+      api-url="https://www.geocat.ch/geonetwork/srv/api"
+      layout="ROW"
+      primary-color="#0f4395"
+      secondary-color="#8bc832"
+    ></gn-results-list>
+
+    <script>
+      GNUI.recordsRepository
+        .search({
+          filters: {
+            any: 'wasser',
+            linkProtocol: '/OGC:WMT?S.*/',
+          },
+          offset: 0,
+          limit: 10,
+          sort: ['desc', '_score'],
+          fields: ['resourceTitleObject', 'link'],
+        })
+        .subscribe(console.log)
+    </script>
+  </body>
+</html>
