@@ -7,3 +7,5 @@
 # OpenAPI generated specs
 **/spec.yaml
 /.nx
+
+.angular
