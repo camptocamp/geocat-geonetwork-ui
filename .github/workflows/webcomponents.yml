@@ -1,11 +1,15 @@
 name: Web Components
-run-name: 🧩 Build Web Components for ${{ github.event_name == 'issue_comment' && 'PR' || (github.event_name == 'release' && '🏷' || '🌱') }} ${{github.event_name == 'issue_comment' && github.event.issue.number || github.ref_name}}
+run-name: 🧩 Build Web Components for ${{ github.event_name == 'issue_comment' && 'PR' || (github.event_name == 'release' && '🏷' || '🌱') }} ${{github.event_name == 'issue_comment' && github.event.issue.number || github.head_ref || github.ref_name}}
 
 # This workflow runs whenever a commit is pushed on main or a release is published
 on:
   push:
     branches:
-      - geocat
+      - main
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
   release:
     types: [published]
 
@@ -26,7 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.checks.outputs.ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
           fetch-depth: 0
 
@@ -54,10 +58,10 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: Publish web component to ${{ env.PUBLISH_BRANCH }} branch
+      - name: Publish web component to ${{ env.PUBLISH_BRANCH }}-${{ github.head_ref || github.ref_name }} branch
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           force_orphan: true
           publish_dir: ./wc-dist
-          publish_branch: ${{ env.PUBLISH_BRANCH }}
+          publish_branch: ${{ env.PUBLISH_BRANCH }}-${{ github.head_ref || github.ref_name }}
