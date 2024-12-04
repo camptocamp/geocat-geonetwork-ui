@@ -4,52 +4,23 @@ run-name: 🚀 Deploy to GitHub Pages for ${{ github.event_name == 'issue_commen
 env:
   NODE_VERSION: 18.16.1
 
-# This workflow runs whenever the "deploy affected apps" checkbox is checked (for PR)
-# or on every push to main
+# This workflow deploys the geoadmin demo app
 on:
   push:
     branches:
-      - geocat
-  issue_comment:
-    types:
-      - edited
-
-concurrency:
-  group: deploy-${{ github.ref }}
-  cancel-in-progress: true
+      - geocat-gpf
 
 jobs:
-  checks:
-    if: github.event_name != 'issue_comment' || github.event.issue.pull_request
-    name: Check whether a deploy was requested on a PR
-    runs-on: ubuntu-latest
-    outputs:
-      shouldRun: ${{ github.event_name != 'issue_comment' || (contains(github.event.changes.body.from, '- [ ] 🚀 Build and deploy storybook and demo on GitHub Pages') && contains(github.event.comment.body, '- [x] 🚀 Build and deploy storybook and demo on GitHub Pages')) || '' }}
-      ref: ${{ github.event_name == 'issue_comment' && steps.comment-branch.outputs.head_ref || '' }}
-
-    steps:
-      - uses: xt0rted/pull-request-comment-branch@v1
-        if: github.event_name == 'issue_comment'
-        id: comment-branch
 
   gh-pages:
-    needs: checks
-    if: github.event_name != 'issue_comment' || needs.checks.outputs.shouldRun
-    name: Deploy docs, apps, Storybook to GitHub Pages
+    name: Deploy geoadmin demo
     runs-on: ubuntu-latest
     env:
-      BRANCH_NAME: ${{needs.checks.outputs.ref || 'geocat'}}
+      BRANCH_NAME: ${{'geocat-gpf'}}
 
     steps:
-      - name: Dump GitHub event
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github.event) }}
-        run: echo "$GITHUB_CONTEXT"
-
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: ${{ needs.checks.outputs.ref }}
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
@@ -57,55 +28,14 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: add initial comment
-        uses: thollander/actions-comment-pull-request@v2
-        if: github.event_name == 'issue_comment'
-        with:
-          message: 'GitHub Pages links:
-
-
-            🚧 building in progress... 🚧'
-          comment_tag: github-links
-          pr_number: ${{ github.event.issue.number }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Install
         run: npm ci
 
-      - name: Build storybook
-        run: npm run build:storybook
-
-      - name: Build demo & web components
-        run: npm run build:demo
-
-      - name: Build metadata-converter app
-        if: github.event_name != 'issue_comment' # This is not done on PR, only on main branch
-        run: npx nx build metadata-converter --prod --base-href=./
-
-      - name: Build docs
-        run: npm run docs:build -- --base=/geonetwork-ui/${{env.BRANCH_NAME}}/docs/ && mkdir -p dist/docs && mv docs/.vitepress/dist/* dist/docs
-
-      # FIXME: restore a system for testing web components but faster/lighter than storybook
-      #      - name: Build storybook for web components
-      #        run: npm run build:storybook-wc
+      - name: Build geoadmin-demo app
+        run: npx nx build geoadmin-demo --prod --base-href=./
 
       - name: Deploy to directory ${{ env.BRANCH_NAME }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           npx gh-pages --dist dist/ --dest ${{env.BRANCH_NAME}} --remove "${{env.BRANCH_NAME}}/**" --no-history --repo "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git"
-
-      - name: update PR comment
-        uses: thollander/actions-comment-pull-request@v2
-        if: github.event_name == 'issue_comment'
-        with:
-          message: 'GitHub Pages links:
-
-            * (Documentation)[https://geonetwork.github.io/geonetwork-ui/${{env.BRANCH_NAME}}/docs/]
-
-            * (Web components demo)[https://geonetwork.github.io/geonetwork-ui/${{env.BRANCH_NAME}}/demo/webcomponents/]
-
-            * (UI components storybook)[https://geonetwork.github.io/geonetwork-ui/${{env.BRANCH_NAME}}/storybook/demo/]'
-          comment_tag: github-links
-          pr_number: ${{ github.event.issue.number }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
