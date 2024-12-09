@@ -14,7 +14,7 @@ body {
   border: 0;
 }
 
-gn-search-input {
+.search-input {
   position: absolute;
   left: 20px;
   top: 55px;
@@ -25,6 +25,17 @@ gn-search-input {
 gn-results-list {
   position: absolute;
   left: 20px;
+  top: 125px;
+  bottom: 20px;
+  width: 40%;
+  padding: 8px;
+  background: white;
+  overflow: auto;
+}
+
+gn-record-view {
+  position: absolute;
+  right: 20px;
   top: 125px;
   bottom: 20px;
   width: 40%;

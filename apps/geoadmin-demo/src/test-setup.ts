@@ -1,8 +1,9 @@
-// @ts-expect-error https://thymikee.github.io/jest-preset-angular/docs/getting-started/test-environment
-globalThis.ngJest = {
-  testEnvironmentOptions: {
-    errorOnUnknownElements: true,
-    errorOnUnknownProperties: true,
-  },
-}
 import 'jest-preset-angular/setup-jest'
+import '../../../jest.setup'
+
+class ResizeObserverMock {
+  observe = jest.fn()
+  unobserve = jest.fn()
+}
+
+;(window as any).ResizeObserver = ResizeObserverMock

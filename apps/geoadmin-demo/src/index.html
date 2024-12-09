@@ -13,19 +13,34 @@
       id="geoadmin-root"
       src="https://map.geo.admin.ch/#embed?bgLayer=ch.swisstopo.pixelkarte-grau"
     ></iframe>
+
+    <input class="search-input" type="text" />
+
+    <!-- this stays hidden but is just there for initializing the GNUI global -->
     <gn-search-input
+      style="display: none"
       api-url="https://www.geocat.ch/geonetwork/srv/api"
       primary-color="#0f4395"
       secondary-color="#8bc832"
     ></gn-search-input>
-    <gn-results-list
+
+    <gn-record-view
       api-url="https://www.geocat.ch/geonetwork/srv/api"
-      layout="ROW"
       primary-color="#0f4395"
       secondary-color="#8bc832"
-    ></gn-results-list>
+      record-id="417e9f31-d9d7-4165-9a5c-2f12b7191926"
+    ></gn-record-view>
 
     <script>
+      // window.addEventListener(
+      //   'message',
+      //   (e) => {
+      //     if (e.origin !== 'https://map.geo.admin.ch') return
+      //     console.log(e.data) // log iframe events
+      //   },
+      //   false
+      // )
+
       GNUI.recordsRepository
         .search({
           filters: {
@@ -35,7 +50,7 @@
           offset: 0,
           limit: 10,
           sort: ['desc', '_score'],
-          fields: ['resourceTitleObject', 'link'],
+          fields: ['resourceTitleObject', 'link', 'uuid'],
         })
         .subscribe(console.log)
     </script>
