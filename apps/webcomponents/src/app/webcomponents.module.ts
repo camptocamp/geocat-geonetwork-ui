@@ -11,7 +11,18 @@ import { BrowserModule } from '@angular/platform-browser'
 import { Configuration } from '@geonetwork-ui/data-access/gn4'
 import { FeatureRecordModule } from '@geonetwork-ui/feature/record'
 import { FeatureSearchModule } from '@geonetwork-ui/feature/search'
-import { UiElementsModule } from '@geonetwork-ui/ui/elements'
+import {
+  ApiCardComponent,
+  ContentGhostComponent,
+  DownloadItemComponent,
+  DownloadsListComponent,
+  ImageOverlayPreviewComponent,
+  LinkCardComponent,
+  MetadataContactComponent,
+  MetadataInfoComponent,
+  MetadataQualityComponent,
+  UiElementsModule,
+} from '@geonetwork-ui/ui/elements'
 import { UiInputsModule } from '@geonetwork-ui/ui/inputs'
 import { UiSearchModule } from '@geonetwork-ui/ui/search'
 import {
@@ -46,6 +57,12 @@ import { UiDatavizModule } from '@geonetwork-ui/ui/dataviz'
 import { GnDatasetViewMapComponent } from './components/gn-dataset-view-map/gn-dataset-view-map.component'
 import { RecordsRepositoryInterface } from '@geonetwork-ui/common/domain/repository/records-repository.interface'
 import { PlatformServiceInterface } from '@geonetwork-ui/common/domain/platform.service.interface'
+import { GnRecordViewComponent } from './components/gn-record-view/gn-record-view.component'
+import { LetDirective } from '@ngrx/component'
+import {
+  BlockListComponent,
+  PreviousNextButtonsComponent,
+} from '@geonetwork-ui/ui/layout'
 
 const CUSTOM_ELEMENTS: [new (...args) => BaseComponent, string][] = [
   [GnFacetsComponent, 'gn-facets'],
@@ -57,6 +74,7 @@ const CUSTOM_ELEMENTS: [new (...args) => BaseComponent, string][] = [
   [GnMapViewerComponent, 'gn-map-viewer'],
   [GnFigureDatasetsComponent, 'gn-figure-datasets'],
   [GnDatasetViewMapComponent, 'gn-dataset-view-map'],
+  [GnRecordViewComponent, 'gn-record-view'],
 ]
 
 @NgModule({
@@ -73,6 +91,7 @@ const CUSTOM_ELEMENTS: [new (...args) => BaseComponent, string][] = [
     GnMapViewerComponent,
     GnFigureDatasetsComponent,
     GnDatasetViewMapComponent,
+    GnRecordViewComponent,
   ],
   imports: [
     CommonModule,
@@ -99,6 +118,18 @@ const CUSTOM_ELEMENTS: [new (...args) => BaseComponent, string][] = [
     BrowserAnimationsModule,
     MapStateContainerComponent,
     LayersPanelComponent,
+    MetadataInfoComponent,
+    ContentGhostComponent,
+    LetDirective,
+    ImageOverlayPreviewComponent,
+    MetadataContactComponent,
+    MetadataQualityComponent,
+    DownloadsListComponent,
+    BlockListComponent,
+    LinkCardComponent,
+    ApiCardComponent,
+    DownloadItemComponent,
+    PreviousNextButtonsComponent,
   ],
   providers: [
     provideGn4(),

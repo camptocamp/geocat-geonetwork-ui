@@ -1,0 +1,10 @@
+@import '../../../styles.css';
+
+.mdc-menu-surface.mat-mdc-autocomplete-panel {
+  margin-top: 10px !important;
+  border-radius: 8px;
+}
+
+:host {
+  display: block;
+}
