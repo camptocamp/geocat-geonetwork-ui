@@ -2,57 +2,108 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Geoadmin + Geocat integration demo</title>
-    <base href="/" />
+    <title>Geoadmin + Geocat Search</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <script src="https://cdn.jsdelivr.net/gh/camptocamp/geocat-geonetwork-ui@wc-dist-geocat-gpf/gn-wc.js"></script>
   </head>
   <body>
-    <iframe
-      id="geoadmin-root"
-      src="https://map.geo.admin.ch/#embed?bgLayer=ch.swisstopo.pixelkarte-grau"
-    ></iframe>
-
-    <input class="search-input" type="text" />
-
-    <!-- this stays hidden but is just there for initializing the GNUI global -->
-    <gn-search-input
-      style="display: none"
-      api-url="https://www.geocat.ch/geonetwork/srv/api"
-      primary-color="#0f4395"
-      secondary-color="#8bc832"
-    ></gn-search-input>
-
-    <gn-record-view
-      api-url="https://www.geocat.ch/geonetwork/srv/api"
-      primary-color="#0f4395"
-      secondary-color="#8bc832"
-      record-id="417e9f31-d9d7-4165-9a5c-2f12b7191926"
-    ></gn-record-view>
-
+    <div class="map-container">
+      <div class="search-container">
+        <input type="text" id="search" placeholder="Search for record.." />
+        <ul id="results"></ul>
+      </div>
+      <iframe
+        id="geoadmin-root"
+        src="https://map.geo.admin.ch/#embed?bgLayer=ch.swisstopo.pixelkarte-grau"
+      ></iframe>
+    </div>
     <script>
-      // window.addEventListener(
-      //   'message',
-      //   (e) => {
-      //     if (e.origin !== 'https://map.geo.admin.ch') return
-      //     console.log(e.data) // log iframe events
-      //   },
-      //   false
-      // )
+      const searchInput = document.getElementById('search')
+      const resultsContainer = document.getElementById('results')
 
-      GNUI.recordsRepository
-        .search({
-          filters: {
-            any: 'wasser',
-            linkProtocol: '/OGC:WMT?S.*/',
-          },
-          offset: 0,
-          limit: 10,
-          sort: ['desc', '_score'],
-          fields: ['resourceTitleObject', 'link', 'uuid'],
+      searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value
+
+        if (!searchTerm) {
+          resultsContainer.innerHTML = ''
+          return
+        }
+
+        GNUI.recordsRepository
+          .search({
+            filters: {
+              any: searchTerm,
+              linkProtocol: '/OGC:WMT?S.*/',
+            },
+            offset: 0,
+            limit: 10,
+            sort: ['desc', '_score'],
+            fields: ['resourceTitleObject', 'link', 'uuid'],
+          })
+          .subscribe({
+            next: (results) => {
+              displayResults(results.records)
+            },
+            error: (err) => {
+              console.error('Error fetching search results:', err)
+            },
+          })
+      })
+
+      function displayResults(items) {
+        resultsContainer.innerHTML = items
+          .map(
+            (item) => `
+      <li>
+        <div>
+          <div class="result-title">${item.title || 'No title available'}</div>
+        </div>
+        <button class="open-btn" data-uuid="${
+          item.uniqueIdentifier
+        }">Open</button>
+      </li>
+    `
+          )
+          .join('')
+
+        resultsContainer.querySelectorAll('.open-btn').forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            const uuid = e.target.dataset.uuid
+            console.log('Selected UUID:', uuid)
+
+            const existingContainer = document.querySelector(
+              '.gn-record-view-container'
+            )
+            if (existingContainer) {
+              existingContainer.remove()
+            }
+
+            const container = document.createElement('div')
+            container.classList.add('gn-record-view-container')
+
+            const closeButton = document.createElement('button')
+            closeButton.classList.add('close-btn')
+            closeButton.innerHTML = '&times;'
+            closeButton.addEventListener('click', () => {
+              container.remove()
+            })
+
+            const recordView = document.createElement('gn-record-view')
+            recordView.setAttribute(
+              'api-url',
+              'https://www.geocat.ch/geonetwork/srv/api'
+            )
+            recordView.setAttribute('primary-color', '#0f4395')
+            recordView.setAttribute('secondary-color', '#8bc832')
+            recordView.setAttribute('record-id', uuid)
+
+            container.appendChild(closeButton)
+            container.appendChild(recordView)
+
+            document.body.appendChild(container)
+          })
         })
-        .subscribe(console.log)
+      }
     </script>
   </body>
 </html>
