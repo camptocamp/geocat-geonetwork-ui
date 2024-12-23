@@ -8,7 +8,7 @@ import {
 } from '@angular/core'
 import { SearchFacade } from '@geonetwork-ui/feature/search'
 import { BaseComponent } from '../base.component'
-import { Observable } from 'rxjs'
+import { Observable, map } from 'rxjs'
 import {
   CatalogRecord,
   OnlineResource,
@@ -26,28 +26,42 @@ import {
   encapsulation: ViewEncapsulation.ShadowDom,
   providers: [SearchFacade],
 })
-export class GnRecordViewComponent extends BaseComponent implements OnInit {
-  @Input() recordId!: string
 
-  record$: Observable<CatalogRecord>
+export class GnRecordViewComponent extends BaseComponent implements OnInit {
+  @Input() recordId!: string;
+  record$: Observable<CatalogRecord | null>;
+  downloads$: Observable<OnlineResource[]>;
+  links$: Observable<OnlineResource[]>;
+  apis$: Observable<OnlineResource[]>;
 
   constructor(injector: Injector) {
-    super(injector)
+    super(injector);
   }
 
   ngOnInit() {
-    super.ngOnInit()
-    // todo
-    this.record$ = this.recordsRepository.getRecord(this.recordId)
+    super.ngOnInit();
+    this.record$ = this.recordsRepository.getRecord(this.recordId);
+
+    this.downloads$ = this.record$.pipe(
+      map((record) => this.getDownloads(record?.onlineResources || []))
+    );
+    this.links$ = this.record$.pipe(
+      map((record) => this.getLinks(record?.onlineResources || []))
+    );
+    this.apis$ = this.record$.pipe(
+      map((record) => this.getAPIs(record?.onlineResources || []))
+    );
   }
 
-  getDownloads(onlineResources: OnlineResource[]) {
-    return onlineResources.filter((d) => d.type === 'download')
+  getDownloads(onlineResources: OnlineResource[]): OnlineResource[] {
+    return onlineResources.filter((resource) => resource.type === 'download');
   }
-  getAPIs(onlineResources: OnlineResource[]) {
-    return onlineResources.filter((d) => d.type === 'service')
+
+  getLinks(onlineResources: OnlineResource[]): OnlineResource[] {
+    return onlineResources.filter((resource) => resource.type === 'link');
   }
-  getLinks(onlineResources: OnlineResource[]) {
-    return onlineResources.filter((d) => d.type === 'link')
+
+  getAPIs(onlineResources: OnlineResource[]): OnlineResource[] {
+    return onlineResources.filter((resource) => resource.type === 'service');
   }
 }

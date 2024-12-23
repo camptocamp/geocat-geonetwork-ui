@@ -4,65 +4,75 @@
     [showContent]="!!record?.title"
   >
     <div class="font-title text-[28px] line-clamp-3 mb-4">
-      {{ record.title }}
+      {{ record?.title || 'No Title Available' }}
     </div>
-    <gn-ui-metadata-info [metadata]="record"></gn-ui-metadata-info>
+
+    <gn-ui-metadata-info *ngIf="record" [metadata]="record"></gn-ui-metadata-info>
 
     <gn-ui-image-overlay-preview
       class="block h-[185px] mb-5"
+      *ngIf="record?.overviews?.length > 0"
       [imageUrl]="record?.overviews?.[0]?.url"
     >
     </gn-ui-image-overlay-preview>
-    <gn-ui-metadata-contact [metadata]="record"> </gn-ui-metadata-contact>
 
-    <div class="font-title text-lg mt-4 mb-2 flex flex-row gap-4 items-center">
-      <span translate> record.metadata.download</span>
-      <gn-ui-previous-next-buttons
-        *ngIf="downloads.pagesCount > 1"
-        [listComponent]="downloads"
-      ></gn-ui-previous-next-buttons>
-    </div>
-    <gn-ui-block-list
-      [pageSize]="4"
-      containerClass="gap-4 pt-3 pb-6"
-      #downloads
-    >
-      <gn-ui-download-item
-        #block
-        *ngFor="let otherLink of getDownloads(record.onlineResources)"
-        [link]="otherLink"
-      ></gn-ui-download-item>
-    </gn-ui-block-list>
+    <gn-ui-metadata-contact *ngIf="record" [metadata]="record"></gn-ui-metadata-contact>
 
-    <div class="font-title text-lg mt-4 mb-2 flex flex-row gap-4 items-center">
-      <span translate>record.metadata.links</span>
-      <gn-ui-previous-next-buttons
-        *ngIf="links.pagesCount > 1"
-        [listComponent]="links"
-      ></gn-ui-previous-next-buttons>
+    <div *ngIf="getDownloads(record?.onlineResources)?.length > 0">
+      <div class="font-title text-lg mt-4 mb-2 flex flex-row gap-4 items-center">
+        <span translate>record.metadata.download</span>
+        <gn-ui-previous-next-buttons
+          *ngIf="downloads?.pagesCount > 1"
+          [listComponent]="downloads"
+        ></gn-ui-previous-next-buttons>
+      </div>
+      <gn-ui-block-list
+        [pageSize]="4"
+        containerClass="gap-4 pt-3 pb-6"
+        #downloads
+      >
+        <gn-ui-download-item
+          *ngFor="let otherLink of getDownloads(record?.onlineResources)"
+          [link]="otherLink"
+        ></gn-ui-download-item>
+      </gn-ui-block-list>
     </div>
-    <gn-ui-block-list [pageSize]="4" containerClass="gap-4 pt-3 pb-6" #links>
-      <gn-ui-link-card
-        #block
-        *ngFor="let otherLink of getLinks(record.onlineResources)"
-        [link]="otherLink"
-        [compact]="true"
-      ></gn-ui-link-card>
-    </gn-ui-block-list>
 
-    <div class="font-title text-lg mt-4 mb-2 flex flex-row gap-4 items-center">
-      <span translate>record.metadata.api</span>
-      <gn-ui-previous-next-buttons
-        *ngIf="apis.pagesCount > 1"
-        [listComponent]="apis"
-      ></gn-ui-previous-next-buttons>
+    <div *ngIf="getLinks(record?.onlineResources)?.length > 0">
+      <div class="font-title text-lg mt-4 mb-2 flex flex-row gap-4 items-center">
+        <span translate>record.metadata.links</span>
+        <gn-ui-previous-next-buttons
+          *ngIf="links?.pagesCount > 1"
+          [listComponent]="links"
+        ></gn-ui-previous-next-buttons>
+      </div>
+      <gn-ui-block-list [pageSize]="4" containerClass="gap-4 pt-3 pb-6" #links>
+        <gn-ui-link-card
+          *ngFor="let otherLink of getLinks(record?.onlineResources)"
+          [link]="otherLink"
+          [compact]="true"
+        ></gn-ui-link-card>
+      </gn-ui-block-list>
     </div>
-    <gn-ui-block-list [pageSize]="4" containerClass="gap-4 pt-3 pb-6" #apis>
-      <gn-ui-api-card
-        #block
-        *ngFor="let otherLink of getAPIs(record.onlineResources)"
-        [link]="otherLink"
-      ></gn-ui-api-card>
-    </gn-ui-block-list>
+
+    <div *ngIf="getAPIs(record?.onlineResources)?.length > 0">
+      <div class="font-title text-lg mt-4 mb-2 flex flex-row gap-4 items-center">
+        <span translate>record.metadata.api</span>
+        <gn-ui-previous-next-buttons
+          *ngIf="apis?.pagesCount > 1"
+          [listComponent]="apis"
+        ></gn-ui-previous-next-buttons>
+      </div>
+      <gn-ui-block-list [pageSize]="4" containerClass="gap-4 pt-3 pb-6" #apis>
+        <gn-ui-api-card
+          *ngFor="let otherLink of getAPIs(record?.onlineResources)"
+          [link]="otherLink"
+        ></gn-ui-api-card>
+      </gn-ui-block-list>
+    </div>
   </gn-ui-content-ghost>
 </ng-container>
+
+<ng-template #loadingOrError>
+  <p *ngIf="(record$ | async) === null">No record found for the provided ID.</p>
+</ng-template>
