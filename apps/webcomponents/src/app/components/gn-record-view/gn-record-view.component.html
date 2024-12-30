@@ -4,10 +4,10 @@
     [showContent]="!!record?.title"
   >
     <div class="font-title text-[28px] line-clamp-3 mb-4">
-      {{ record?.title || 'No Title Available' }}
+      {{ record.title }}
     </div>
 
-    <gn-ui-metadata-info *ngIf="record" [metadata]="record"></gn-ui-metadata-info>
+    <gn-ui-metadata-info [metadata]="record"></gn-ui-metadata-info>
 
     <gn-ui-image-overlay-preview
       class="block h-[185px] mb-5"
@@ -16,7 +16,7 @@
     >
     </gn-ui-image-overlay-preview>
 
-    <gn-ui-metadata-contact *ngIf="record" [metadata]="record"></gn-ui-metadata-contact>
+    <gn-ui-metadata-contact [metadata]="record"></gn-ui-metadata-contact>
 
     <div *ngIf="getDownloads(record?.onlineResources)?.length > 0">
       <div class="font-title text-lg mt-4 mb-2 flex flex-row gap-4 items-center">
