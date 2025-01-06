@@ -7,9 +7,16 @@
     <script src="https://cdn.jsdelivr.net/gh/camptocamp/geocat-geonetwork-ui@wc-dist-geocat-gpf/gn-wc.js"></script>
   </head>
   <body>
+    <!-- this initializes the API url -->
+    <gn-record-view
+      style="display: none"
+      api-url="https://www.geocat.ch/geonetwork/srv/api"
+      record-id="8698bf0b-fceb-4f0f-989b-111e7c4af0a4"
+    ></gn-record-view>
+
     <div class="map-container">
       <div class="search-container">
-        <input type="text" id="search" placeholder="Search for record.." />
+        <input type="text" id="search" placeholder="Search for record..." />
         <ul id="results"></ul>
       </div>
       <iframe
