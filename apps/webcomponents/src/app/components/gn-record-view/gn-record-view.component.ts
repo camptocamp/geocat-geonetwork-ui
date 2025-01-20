@@ -26,42 +26,41 @@ import {
   encapsulation: ViewEncapsulation.ShadowDom,
   providers: [SearchFacade],
 })
-
 export class GnRecordViewComponent extends BaseComponent implements OnInit {
-  @Input() recordId!: string;
-  record$: Observable<CatalogRecord | null>;
-  downloads$: Observable<OnlineResource[]>;
-  links$: Observable<OnlineResource[]>;
-  apis$: Observable<OnlineResource[]>;
+  @Input() recordId!: string
+  record$: Observable<CatalogRecord | null>
+  downloads$: Observable<OnlineResource[]>
+  links$: Observable<OnlineResource[]>
+  apis$: Observable<OnlineResource[]>
 
   constructor(injector: Injector) {
-    super(injector);
+    super(injector)
   }
 
   ngOnInit() {
-    super.ngOnInit();
-    this.record$ = this.recordsRepository.getRecord(this.recordId);
+    super.ngOnInit()
+    this.record$ = this.recordsRepository.getRecord(this.recordId)
 
     this.downloads$ = this.record$.pipe(
       map((record) => this.getDownloads(record?.onlineResources || []))
-    );
+    )
     this.links$ = this.record$.pipe(
       map((record) => this.getLinks(record?.onlineResources || []))
-    );
+    )
     this.apis$ = this.record$.pipe(
       map((record) => this.getAPIs(record?.onlineResources || []))
-    );
+    )
   }
 
   getDownloads(onlineResources: OnlineResource[]): OnlineResource[] {
-    return onlineResources.filter((resource) => resource.type === 'download');
+    return onlineResources.filter((resource) => resource.type === 'download')
   }
 
   getLinks(onlineResources: OnlineResource[]): OnlineResource[] {
-    return onlineResources.filter((resource) => resource.type === 'link');
+    return onlineResources.filter((resource) => resource.type === 'link')
   }
 
   getAPIs(onlineResources: OnlineResource[]): OnlineResource[] {
-    return onlineResources.filter((resource) => resource.type === 'service');
+    return onlineResources.filter((resource) => resource.type === 'service')
   }
 }
