@@ -13,6 +13,7 @@ import {
   CatalogRecord,
   OnlineResource,
 } from '@geonetwork-ui/common/domain/model/record'
+import { ErrorType } from '@geonetwork-ui/ui/elements'
 
 // TODO in this component:
 // - Support metadata quality option
@@ -32,6 +33,7 @@ export class GnRecordViewComponent extends BaseComponent implements OnInit {
   downloads$: Observable<OnlineResource[]>
   links$: Observable<OnlineResource[]>
   apis$: Observable<OnlineResource[]>
+  errorType = ErrorType
 
   constructor(injector: Injector) {
     super(injector)
