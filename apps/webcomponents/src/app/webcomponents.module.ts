@@ -16,6 +16,7 @@ import {
   ContentGhostComponent,
   DownloadItemComponent,
   DownloadsListComponent,
+  ErrorComponent,
   ImageOverlayPreviewComponent,
   LinkCardComponent,
   MetadataContactComponent,
@@ -130,6 +131,7 @@ const CUSTOM_ELEMENTS: [new (...args) => BaseComponent, string][] = [
     ApiCardComponent,
     DownloadItemComponent,
     PreviousNextButtonsComponent,
+    ErrorComponent,
   ],
   providers: [
     provideGn4(),
