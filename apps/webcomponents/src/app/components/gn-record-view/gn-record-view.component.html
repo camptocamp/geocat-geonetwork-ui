@@ -76,6 +76,7 @@
         <gn-ui-api-card
           *ngFor="let otherLink of getAPIs(record?.onlineResources)"
           [link]="otherLink"
+          [currentLink]="otherLink"
         ></gn-ui-api-card>
       </gn-ui-block-list>
     </div>
