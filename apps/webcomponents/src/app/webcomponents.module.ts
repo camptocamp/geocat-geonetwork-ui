@@ -64,6 +64,8 @@ import {
   BlockListComponent,
   PreviousNextButtonsComponent,
 } from '@geonetwork-ui/ui/layout'
+import {ChartViewComponent, TableViewComponent} from "@geonetwork-ui/feature/dataviz";
+import {MatTabsModule} from "@angular/material/tabs";
 
 const CUSTOM_ELEMENTS: [new (...args) => BaseComponent, string][] = [
   [GnFacetsComponent, 'gn-facets'],
@@ -132,6 +134,9 @@ const CUSTOM_ELEMENTS: [new (...args) => BaseComponent, string][] = [
     DownloadItemComponent,
     PreviousNextButtonsComponent,
     ErrorComponent,
+    TableViewComponent,
+    ChartViewComponent,
+    MatTabsModule,
   ],
   providers: [
     provideGn4(),
