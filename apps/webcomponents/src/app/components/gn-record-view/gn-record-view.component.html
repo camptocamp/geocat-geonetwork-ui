@@ -22,6 +22,37 @@
           [metadata]="record"
         ></gn-ui-metadata-contact>
       </div>
+      <div class="w-full h-full flex flex-col">
+        <div class="font-title text-lg mt-4 mb-2">
+          <span translate>record.metadata.preview</span>
+        </div>
+        <mat-tab-group>
+          <mat-tab label="Table View">
+            <div class="relative h-full" style="height: 500px;">
+              <wc-gn-dataset-view-table
+                class="overflow-auto grow h-full"
+                [apiUrl]="apiUrl"
+                [searchId]="searchId"
+                [datasetId]="record.uniqueIdentifier"
+              ></wc-gn-dataset-view-table>
+            </div>
+          </mat-tab>
+          <mat-tab label="Chart View">
+            <div class="relative h-full" style="height: 500px;">
+              <wc-gn-dataset-view-chart
+                class="overflow-auto grow h-full"
+                [apiUrl]="apiUrl"
+                [searchId]="searchId"
+                [datasetId]="record.uniqueIdentifier"
+                [aggregation]="'average'"
+                [xProperty]="'adresse'"
+                [chartType]="'line'"
+              ></wc-gn-dataset-view-chart>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+
       <div *ngIf="getDownloads(record?.onlineResources)?.length > 0">
         <div
           class="font-title text-lg mt-4 mb-2 flex flex-row gap-4 items-center"
