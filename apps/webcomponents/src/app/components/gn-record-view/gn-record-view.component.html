@@ -28,7 +28,7 @@
         </div>
         <mat-tab-group>
           <mat-tab label="Table View">
-            <div class="relative h-full" style="height: 500px;">
+            <div class="relative h-full" style="height: 500px">
               <wc-gn-dataset-view-table
                 class="overflow-auto grow h-full"
                 [apiUrl]="apiUrl"
@@ -38,7 +38,7 @@
             </div>
           </mat-tab>
           <mat-tab label="Chart View">
-            <div class="relative h-full" style="height: 500px;">
+            <div class="relative h-full" style="height: 500px">
               <wc-gn-dataset-view-chart
                 class="overflow-auto grow h-full"
                 [apiUrl]="apiUrl"
@@ -122,7 +122,7 @@
 
 <ng-template #loadingOrError>
   <gn-ui-error
-    [type]="errorTypes.RECORD_NOT_FOUND"
+    [type]="errorType.RECORD_NOT_FOUND"
     [recordId]="recordId"
   ></gn-ui-error>
 </ng-template>
