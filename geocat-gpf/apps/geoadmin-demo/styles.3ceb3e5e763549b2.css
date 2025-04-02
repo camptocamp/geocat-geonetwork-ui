@@ -1,0 +1,1 @@
+html,body{height:100%}body{margin:0;position:relative}#geoadmin-root{width:100%;height:calc(100% - 4px);border:0}gn-search-input{position:absolute;left:20px;top:55px;width:40%;background:white}gn-results-list{position:absolute;left:20px;top:125px;bottom:20px;width:40%;padding:8px;background:white;overflow:auto}
